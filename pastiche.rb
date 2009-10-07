@@ -3,13 +3,13 @@
 require 'rubygems'
 require 'sinatra'
 require 'openid'
-#require 'haml'
+require 'haml'
 
 # options
 enable :sessions
 
 get '/' do
-  ':top'
+  haml :index
 end
 
 get %r{/(\d+)} do |snippet_id|

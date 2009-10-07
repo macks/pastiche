@@ -1,11 +1,12 @@
+require 'spec_helper'
 require 'pastiche'
-require 'test/unit'
-require 'rack/test'
 
 set :environment, :test
 
 describe 'Pastiche' do
 
+  include Webrat::Methods
+  include Webrat::Matchers
   include Rack::Test::Methods
 
   def app
@@ -13,9 +14,9 @@ describe 'Pastiche' do
   end
 
   it 'returns top page' do
-    get '/'
+    visit '/'
     last_response.should be_ok
-    last_response.body.should == ':top'
+    last_response.body.should have_selector('title', :content => 'Pastiche')
   end
 
   it 'returns login form' do
