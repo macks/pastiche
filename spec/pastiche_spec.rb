@@ -22,9 +22,10 @@ describe 'Pastiche' do
   end
 
   it 'returns login form' do
-    get '/login'
+    visit '/login'
     last_response.should be_ok
-    last_response.body.should == ':login_form'
+    last_response.body.should have_selector('form')
+    last_response.body.should have_selector('input', :class => 'openid_identifier')
   end
 
   it 'returns snippet' do

@@ -1,0 +1,12 @@
+- @page_title = 'Login'
+.title
+  %h1 Login
+.login_form
+  %form{:method => 'post'}
+    OpenID:
+    %input.openid_identifier{ :type => 'text', :name => 'openid_identifier' }
+    %input{ :type => 'submit', :value => 'Login' }
+  %p
+    What is
+    %a{ :href => 'http://openid.net/' } OpenID
+    ?
