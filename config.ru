@@ -11,5 +11,4 @@ Pastiche.instance_eval do
   #set :path_prefix, '/pastiche'
 end
 
-use Rack::Reloader
 run Pastiche
