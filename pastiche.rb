@@ -64,7 +64,7 @@ class Pastiche < Sinatra::Base
 
     checkid_request = openid_consumer.begin(identifier)
     sreg_request = OpenID::SReg::Request.new
-    sreg_request.request_fields(%w(nickname email fullname))
+    sreg_request.request_fields(%w(nickname email))
     checkid_request.add_extension(sreg_request)
     redirect checkid_request.redirect_url(url, "#{url}login/complete")
   end
@@ -85,10 +85,15 @@ class Pastiche < Sinatra::Base
     when :success
       openid = openid_response.display_identifier
       nickname = params['openid.sreg.nickname']
-      fullname = params['openid.sreg.fullname']
       email = params['openid.sreg.email']
 
-      #session[:user] = User.first(:openid => openid)
+      if not user = User.first(:openid => openid)
+        user = User.new(:openid => openid, :nickname => nickname, :email => email)
+        unless user.save
+          raise user.errors.full_messages.join
+        end
+      end
+      session[:user] = user
 
       # TODO
       "success: #{params.inspect}"
