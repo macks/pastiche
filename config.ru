@@ -2,5 +2,11 @@
 
 require 'pastiche'
 
+Pastiche.instance_eval do
+  # You should change the secret.
+  disable :sessions
+  use Rack::Session::Cookie, :secret => '__secret__'
+end
+
 use Rack::Reloader
 run Pastiche
