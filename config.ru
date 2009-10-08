@@ -2,10 +2,5 @@
 
 require 'pastiche'
 
-Sinatra::Application.instance_eval do
-  set :environment, :production
-end
-
 use Rack::Reloader
-
-run Sinatra::Application
+run Pastiche

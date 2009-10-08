@@ -1,16 +1,18 @@
 require 'spec_helper'
 require 'pastiche'
 
-set :environment, :test
-
 describe 'Pastiche' do
 
   include Webrat::Methods
   include Webrat::Matchers
   include Rack::Test::Methods
 
+  before do
+    Pastiche.set :environment, :test
+  end
+
   def app
-    Sinatra::Application
+    Pastiche
   end
 
   it 'returns top page' do
