@@ -10,6 +10,7 @@ require 'haml'
 class Pastiche < Sinatra::Base
   # options
   enable :sessions
+  set :path_prefix, nil
 
   get '/' do
     haml :index
@@ -28,14 +29,14 @@ class Pastiche < Sinatra::Base
   end
 
   post '/login' do
-    site_url = request.url.sub(/\/login(\?.*)?\z/, '/')
+    url = site_url
     identifier = params[:openid_identifier]
 
     checkid_request = openid_consumer.begin(identifier)
     sreg_request = OpenID::SReg::Request.new
     sreg_request.request_fields(%w(nickname email fullname))
     checkid_request.add_extension(sreg_request)
-    redirect checkid_request.redirect_url(site_url, "#{site_url}login/complete")
+    redirect checkid_request.redirect_url(url, "#{url}login/complete")
   end
 
   get '/login/complete' do
@@ -70,6 +71,20 @@ class Pastiche < Sinatra::Base
     rootdir = self.class.root || '.'
     storage = OpenID::Store::Filesystem.new(File.join(rootdir, 'tmp'))
     OpenID::Consumer.new(session, storage)
+  end
+
+  STANDARD_PORTNUMBER = {
+    'http'  => 80,
+    'https' => 443,
+  }
+
+  def site_url
+    url = request.scheme + '://'
+    url << request.host
+    url << ":#{request.port}" if STANDARD_PORTNUMBER[request.scheme] != request.port
+    url << self.class.path_prefix if self.class.path_prefix
+    url << '/' unless url[-1] == ?/
+    url
   end
 
 end # Pastiche
