@@ -1,5 +1,5 @@
-require 'spec_helper'
 require 'pastiche'
+require 'spec_helper'
 
 describe 'Pastiche' do
 
@@ -9,6 +9,10 @@ describe 'Pastiche' do
 
   before do
     Pastiche.set :environment, :test
+  end
+
+  before :each do
+    DataMapper.auto_migrate!
   end
 
   def app

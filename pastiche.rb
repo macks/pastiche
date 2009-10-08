@@ -6,8 +6,38 @@ require 'openid'
 require 'openid/store/filesystem'
 require 'openid/extensions/sreg'
 require 'haml'
+require 'dm-core'
+require 'dm-validations'
+require 'dm-timestamps'
 
 class Pastiche < Sinatra::Base
+
+  class User
+    include DataMapper::Resource
+    property :id,         Serial
+    property :openid,     String,   :nullable => false, :length => 256, :unique_index => :openid
+    property :nickname,   String,   :nullable => false, :length => 16, :unique_index => :nickname
+    property :email,      String,   :length => 64
+    property :created_at, DateTime, :nullable => false, :auto_validation => false
+    property :updated_at, DateTime, :nullable => false, :auto_validation => false
+
+    has n, :snippets
+  end
+
+  class Snippet
+    include DataMapper::Resource
+    property :id,         Serial
+    property :user_id,    Integer,  :nullable => false
+    property :created_at, DateTime, :nullable => false, :auto_validation => false
+    property :updated_at, DateTime, :nullable => false, :auto_validation => false
+    property :type,       String,   :nullable => false, :length => 16
+    property :title,      String,   :nullable => false, :length => 256
+    property :comment,    String,   :nullable => false, :length => 512
+    property :text,       Text,     :nullable => false, :length => 65536
+
+    belongs_to :user
+  end
+
   # options
   enable :sessions
   set :path_prefix, nil

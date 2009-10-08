@@ -11,4 +11,7 @@ Pastiche.instance_eval do
   #set :path_prefix, '/pastiche'
 end
 
+DataMapper.setup(:default, 'sqlite3:pastiche.db')
+DataMapper.auto_upgrade!
+
 run Pastiche
