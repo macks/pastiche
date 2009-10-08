@@ -100,6 +100,18 @@ class Pastiche < Sinatra::Base
     end
   end
 
+  get '/login/:user_id' do |user_id|
+    # works on test environment only
+    pass unless self.class.test?
+    session[:user] = User.get(user_id.to_i)
+    session[:user].openid
+  end
+
+  get '/logout' do
+    session[:user] = nil
+    ':logout'
+  end
+
   private
 
   def openid_consumer

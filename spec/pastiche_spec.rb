@@ -44,4 +44,24 @@ describe 'Pastiche' do
     last_response.body.should == ':user/hoge'
   end
 
+  it 'clears user session at /logout' do
+    login
+    visit '/logout'
+    last_response.should be_ok
+    last_response.body.should == ':logout'
+  end
+
+  #
+  # helper methods
+  #
+
+  def login(id = rand(1000))
+    openid = 'http://example.com/user%03d' % id
+    user = Pastiche::User.create(:openid => openid)
+    visit "/login/#{user.id}"
+    last_response.should be_ok
+    last_response.body.should == openid
+    user
+  end
+
 end
