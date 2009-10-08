@@ -46,7 +46,7 @@ class Pastiche < Sinatra::Base
     haml :index
   end
 
-  get %r{/(\d+)} do |snippet_id|
+  get %r{\A/(\d+)\z} do |snippet_id|
     ":snippet/#{snippet_id}"
   end
 
