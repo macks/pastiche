@@ -1,6 +1,9 @@
 - @page_title = 'Login'
 .title
   %h1 Login
+- if @error_message
+  .error
+    = @error_message
 .login_form
   %form{:method => 'post'}
     OpenID:

@@ -1,1 +1,34 @@
-%p top page
+%h1 Pastiche
+.page-top
+  .description
+    %p Simple Pastebin Application
+  .top-menu
+    %ul
+      - if logged_in?
+        %li.user-link
+          %a{ :href => url_for("/user/#{session[:user].nickname}") }>= session[:user].nickname
+          \:
+        %li.command-link
+          %a{ :href => url_for('/new') } New snippet
+        %li.command-link
+          %a{ :href => url_for('/logout') } Logout
+      - else
+        %li.command-link
+          %a{ :href => url_for('/login') } Login
+.page-body
+  - if @info_message
+    .information
+      = @info_message
+  .snippets-list
+    %p Latest snippets.
+    %ul
+      - @snippets.each do |snippet|
+        %li
+          %a{ :href => url_for(snippet.id.to_s) }<
+            = "Snippet #{snippet.id}"
+            - if not snippet.title.empty?
+              = snippet.title
+          (
+          %a{ :href => url_for("/user/#{snippet.user.nickname}") }>= snippet.user.nickname
+          )
+.page-bottom

@@ -1,0 +1,19 @@
+- @page_title = 'Post a new snippet'
+.title
+  %h1 New Snippet
+.snippet-form
+  %form{:method => 'post'}
+    .snippet-title
+      Title:
+      %input{ :type => 'text', :name => 'title' }
+    .snippet-type
+      Type:
+      %input{ :type => 'text', :name => 'type' }
+    .snippet-comment
+      Comment:
+      %input{ :type => 'text', :name => 'comment' }
+    .snippet-body
+      Snippet:
+      %br
+      %textarea{ :name => 'text', :cols => 60, :rows => 20 }
+    %input{ :type => 'submit', :value => 'Create' }
