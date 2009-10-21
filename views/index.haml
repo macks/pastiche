@@ -6,15 +6,15 @@
     %ul
       - if logged_in?
         %li.user-link
-          %a{ :href => url_for("/user/#{@authd_user.nickname}") }>= @authd_user.nickname
+          %a{ :href => path_to("/user/#{@authd_user.nickname}") }>= @authd_user.nickname
           \:
         %li.command-link
-          %a{ :href => url_for('/new') } New snippet
+          %a{ :href => path_to('/new') } New snippet
         %li.command-link
-          %a{ :href => url_for('/logout') } Logout
+          %a{ :href => path_to('/logout') } Logout
       - else
         %li.command-link
-          %a{ :href => url_for('/login') } Login
+          %a{ :href => path_to('/login') } Login
 .page-body
   != partial :flash_message
   .snippets-list
@@ -22,8 +22,8 @@
     %ul
       - @snippets.each do |snippet|
         %li
-          %a{ :href => url_for(snippet.id.to_s) }= "Snippet #{snippet.id}: #{snippet.title}"
+          %a{ :href => path_to(snippet.id.to_s) }= "Snippet #{snippet.id}: #{snippet.title}"
           (
-          %a{ :href => url_for("/user/#{snippet.user.nickname}") }>= snippet.user.nickname
+          %a{ :href => path_to("/user/#{snippet.user.nickname}") }>= snippet.user.nickname
           )
 .page-bottom

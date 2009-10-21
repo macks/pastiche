@@ -210,6 +210,14 @@ class Pastiche < Sinatra::Base
     url + path
   end
 
+  def path_to(path)
+    if self.class.path_prefix
+      self.class.path_prefix + path
+    else
+      path
+    end
+  end
+
   def flash
     @flash ||= Flash.new(session)
   end
