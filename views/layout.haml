@@ -3,5 +3,8 @@
 %html
   %head
     %title= (@page_title ? "#{@page_title} - " : '') + 'Pastiche'
+    %link{:href => path_to('/prettify/prettify.css'), :type => 'text/css', :rel => 'stylesheet'}
+    %script{:type => 'text/javascript', :src => path_to('/prettify/prettify.js')}
+    %script{:type => 'text/javascript', :src => path_to('/javascripts/jquery.js')}
   %body
     != yield

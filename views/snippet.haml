@@ -1,3 +1,16 @@
-%h1= "Snippet #{@snippet.id}: #{@snippet.title}"
-%pre
-  = @snippet.inspect
+%h1= "Snippet #{@snippet.id}"
+:javascript
+  $(prettyPrint);
+.snippet
+  .snippet-title
+    Title:
+    = @snippet.title
+  .snippet-author
+    Author:
+    %a{:href => path_to("/user/#{@snippet.user.nickname}") }= @snippet.user.nickname
+  - if @snippet.comment
+    .snippet-comment
+      Comment:
+      = @snippet.comment
+  .snippet-body
+    %pre{:class => "prettyprint lang-c"}= @snippet.text

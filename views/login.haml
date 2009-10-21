@@ -2,12 +2,12 @@
 .title
   %h1 Login
 != partial :flash_message
-.login_form
+.login-form
   %form{:method => 'post'}
     OpenID:
     %input.openid_identifier{ :type => 'text', :name => 'openid_identifier' }
     %input{ :type => 'submit', :value => 'Login' }
   %p
-    What is
-    %a{ :href => 'http://openid.net/' } OpenID
+    What is&nbsp;
+    %a{ :href => 'http://openid.net/' }> OpenID
     ?
