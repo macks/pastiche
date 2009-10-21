@@ -1,0 +1,42 @@
+= Pastiche
+
+== Description
+
+Simple pastebin application using Sinatra with OpenID authentication.
+
+== Install
+
+Edit +config.ru+ and run +rackup+.
+
+Required libraries are:
+
+- Sinatra
+- Haml
+- Ruby OpenID
+- DataMapper
+
+Required libraries for development are:
+
+- RSpec
+- Webrat
+- Rack-Test
+
+== Authors
+
+MATSUYAMA Kengo <macksx@gmail.com>
+
+== License
+
+See LICENSE.
+
+=== jQuery
+
++public/javascripts/jquery.js+ is downloaded from:
+
+  http://jquery.com/
+
+=== google-code-prettify
+
+Files in +public/prettify+ directory are downloaded from:
+
+  http://code.google.com/p/google-code-prettify/
