@@ -36,7 +36,7 @@ class Pastiche < Sinatra::Base
     property :updated_at, DateTime, :nullable => false, :auto_validation => false
     property :type,       String,   :nullable => false, :length => 16
     property :title,      String,   :nullable => false, :length => 256
-    property :comment,    String,   :nullable => false, :length => 512
+    property :comment,    String,   :length => 512
     property :text,       Text,     :nullable => false, :length => 65536
 
     belongs_to :user
@@ -47,9 +47,16 @@ class Pastiche < Sinatra::Base
   set :path_prefix, nil
   set :haml, :escape_html => true
 
+  before do
+    # load sessions
+    @authd_user = User.get(session[:user_id]) if session[:user_id]
+
+    # clear useless sessions
+    session.delete_if {|key, value| value.nil? }
+  end
+
   # top page
   get '/' do
-    @info_message = session.delete(:info_message)
     @snippets = Snippet.all(:order => [:updated_at.desc], :limit => 10)
     haml :index
   end
@@ -67,8 +74,11 @@ class Pastiche < Sinatra::Base
     title   = params[:title].strip
     type    = params[:type].strip
     comment = params[:comment].strip
-    snippet = session[:user].snippets.create(:title => title, :type => type, :comment => comment, :text => text)
-    raise 'something wrong' if snippet.dirty?
+    snippet = @authd_user.snippets.create(:title => title, :type => type, :comment => comment, :text => text)
+    if snippet.dirty?
+      flash[:error] = snippet.errors.full_messages.join('. ')
+      redirect url_for('/new')
+    end
     redirect "/#{snippet.id}"
   end
 
@@ -87,13 +97,12 @@ class Pastiche < Sinatra::Base
   # show user configuration form
   get '/user/:user/config' do |user|
     permission_denied if !user[:session] || user[:session].nickname != user
-    @user = session[:user]
+    @user = @authd_user
     haml :user_config
   end
 
   # login form
   get '/login' do
-    @error_message = session.delete(:error_message)
     haml :login
   end
 
@@ -102,11 +111,16 @@ class Pastiche < Sinatra::Base
     url = site_url
     identifier = params[:openid_identifier]
 
-    checkid_request = openid_consumer.begin(identifier)
-    sreg_request = OpenID::SReg::Request.new
-    sreg_request.request_fields(%w(nickname email))
-    checkid_request.add_extension(sreg_request)
-    redirect checkid_request.redirect_url(url, url_for('/login/complete'))
+    begin
+      checkid_request = openid_consumer.begin(identifier)
+      sreg_request = OpenID::SReg::Request.new
+      sreg_request.request_fields(%w(nickname email))
+      checkid_request.add_extension(sreg_request)
+      redirect checkid_request.redirect_url(url, url_for('/login/complete'))
+    rescue
+      flash[:error] = $!.to_s
+      redirect url_for('/login')
+    end
   end
 
   # login (post process)
@@ -115,13 +129,13 @@ class Pastiche < Sinatra::Base
 
     case openid_response.status
     when :failure
-      session[:error_message] = 'Login failure'
+      flash[:error] = 'Login failure'
       redirect url_for('/login')
     when :setup_needed
-      session[:error_message] = 'Setup needed'
+      flash[:error] = 'Setup needed'
       redirect url_for('/login')
     when :cancel
-      session[:error_message] = 'Login canceled'
+      flash[:error] = 'Login canceled'
       redirect url_for('/login')
     when :success
       openid = openid_response.display_identifier
@@ -132,34 +146,38 @@ class Pastiche < Sinatra::Base
       if not user = User.first(:openid => openid)
         user = User.new(:openid => openid, :nickname => nickname, :email => email)
         unless user.save
-          raise user.errors.full_messages.join
+          flash[:error] = user.errors.full_messages.join('. ')
+          redirect url_for('/login')
         end
       end
-      session[:user] = user
-      session[:info_message] = 'Login succeeded'
+      session[:user_id] = user.id
+      flash[:info] = 'Login succeeded'
       redirect url_for('/')
     end
   end
 
-  # login (test only)
-  get '/login/:user_id' do |user_id|
-    # works on test environment only
-    pass unless self.class.test?
-    session[:user] = User.get(user_id.to_i)
-    session[:user].openid
-  end
-
   # logout
   get '/logout' do
-    session.delete(:user)
-    session[:info_message] = 'Logged out'
+    session.delete(:user_id)
+    flash[:info] = 'Logged out'
     redirect url_for('/')
   end
+
+  # for test environment only
+  configure :test do
+    get '/login/:user_id' do |user_id|
+      if user = User.get(user_id.to_i)
+        session[:user_id] = user.id
+        user.openid
+      end
+    end
+  end
+
 
   private
 
   def logged_in?
-    !! session[:user]
+    !! session[:user_id]
   end
 
   def permission_denied
@@ -191,5 +209,32 @@ class Pastiche < Sinatra::Base
     url = site_url.chop if path[0] == ?/
     url + path
   end
+
+  def flash
+    @flash ||= Flash.new(session)
+  end
+
+  helpers do
+    def partial(name)
+      haml "_#{name}".to_sym, :layout => false
+    end
+  end
+
+
+  class Flash
+    def initialize(session)
+      @session = session
+      @session[:flash] ||= {}
+      @cache = {}
+    end
+
+    def [](key)
+      @cache[key] ||= @session[:flash].delete(key)
+    end
+
+    def []=(key, value)
+      @cache[key] = @session[:flash][key] = value
+    end
+  end # Flash
 
 end # Pastiche

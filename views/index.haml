@@ -6,7 +6,7 @@
     %ul
       - if logged_in?
         %li.user-link
-          %a{ :href => url_for("/user/#{session[:user].nickname}") }>= session[:user].nickname
+          %a{ :href => url_for("/user/#{@authd_user.nickname}") }>= @authd_user.nickname
           \:
         %li.command-link
           %a{ :href => url_for('/new') } New snippet
@@ -16,18 +16,13 @@
         %li.command-link
           %a{ :href => url_for('/login') } Login
 .page-body
-  - if @info_message
-    .information
-      = @info_message
+  != partial :flash_message
   .snippets-list
     %p Latest snippets.
     %ul
       - @snippets.each do |snippet|
         %li
-          %a{ :href => url_for(snippet.id.to_s) }<
-            = "Snippet #{snippet.id}"
-            - if not snippet.title.empty?
-              = snippet.title
+          %a{ :href => url_for(snippet.id.to_s) }= "Snippet #{snippet.id}: #{snippet.title}"
           (
           %a{ :href => url_for("/user/#{snippet.user.nickname}") }>= snippet.user.nickname
           )
