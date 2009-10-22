@@ -1,16 +1,22 @@
-%h1= "Snippet #{@snippet.id}"
+!= partial :header
+%h2= "Snippet #{@snippet.id}"
 :javascript
   $(prettyPrint);
 .snippet
-  .snippet-title
-    Title:
-    = @snippet.title
-  .snippet-author
-    Author:
-    %a{:href => path_to("/user/#{@snippet.user.nickname}") }= @snippet.user.nickname
-  - if @snippet.comment
-    .snippet-comment
-      Comment:
-      = @snippet.comment
-  .snippet-body
-    %pre{:class => "prettyprint lang-c"}= @snippet.text
+  %dl
+    %dt Title
+    %dd= @snippet.title
+
+    %dt Author
+    %dd
+      %a{:href => path_to("/user/#{@snippet.user.nickname}") }= @snippet.user.nickname
+
+    %dt Comment
+    %dd= @snippet.comment
+
+    %dt Created at
+    %dd= @snippet.created_at
+
+    %dt Last modified at
+    %dd= @snippet.updated_at
+  %pre{:class => "prettyprint lang-#{@snippet.type}"}= @snippet.text

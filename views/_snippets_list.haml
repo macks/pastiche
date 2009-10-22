@@ -1,0 +1,7 @@
+%ul.snippets-list
+  - @snippets.each do |snippet|
+    %li
+      %a{ :href => path_to("/#{snippet.id}") }= "Snippet #{snippet.id}: #{snippet.title}"
+      (
+      %a{ :href => path_to("/user/#{snippet.user.nickname}") }>= snippet.user.nickname
+      )

@@ -10,6 +10,7 @@ require 'openid'
 require 'openid/store/filesystem'
 require 'openid/extensions/sreg'
 require 'haml'
+require 'sass'
 require 'dm-core'
 require 'dm-validations'
 require 'dm-timestamps'
@@ -163,6 +164,12 @@ class Pastiche < Sinatra::Base
     session.delete(:user_id)
     flash[:info] = 'Logged out'
     redirect url_for('/')
+  end
+
+  # stylesheet
+  get '/stylesheets/application.css' do
+    content_type 'text/css'
+    sass :application
   end
 
   # for test environment only

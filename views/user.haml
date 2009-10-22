@@ -1,0 +1,18 @@
+!= partial :header
+%h2= "User: #{@user.nickname}"
+
+%h3 Profile
+.user-profile
+  %dl
+    %dt OpenID
+    %dd= @user.openid
+
+    %dt Nickname
+    %dd= @user.nickname
+
+    %dt Email
+    %dd= @user.email
+
+%h3 Posted snippets
+- @snippets = @user.snippets
+!= partial :snippets_list

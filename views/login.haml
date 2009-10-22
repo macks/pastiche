@@ -1,6 +1,6 @@
 - @page_title = 'Login'
-.title
-  %h1 Login
+!= partial :header
+%h2 Login
 != partial :flash_message
 .login-form
   %form{:method => 'post'}

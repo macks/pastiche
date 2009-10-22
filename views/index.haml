@@ -1,29 +1,6 @@
-%h1 Pastiche
-.page-top
-  .description
-    %p Simple Pastebin Application
-  .top-menu
-    %ul
-      - if logged_in?
-        %li.user-link
-          %a{ :href => path_to("/user/#{@authd_user.nickname}") }>= @authd_user.nickname
-          \:
-        %li.command-link
-          %a{ :href => path_to('/new') } New snippet
-        %li.command-link
-          %a{ :href => path_to('/logout') } Logout
-      - else
-        %li.command-link
-          %a{ :href => path_to('/login') } Login
-.page-body
-  != partial :flash_message
-  .snippets-list
-    %p Latest snippets.
-    %ul
-      - @snippets.each do |snippet|
-        %li
-          %a{ :href => path_to(snippet.id.to_s) }= "Snippet #{snippet.id}: #{snippet.title}"
-          (
-          %a{ :href => path_to("/user/#{snippet.user.nickname}") }>= snippet.user.nickname
-          )
-.page-bottom
+!= partial :header
+!= partial :flash_message
+.new-snippet-button
+  %a{:href => path_to('/new')} New snippet
+%p Latest snippets.
+!= partial :snippets_list

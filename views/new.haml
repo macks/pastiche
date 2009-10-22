@@ -1,6 +1,6 @@
 - @page_title = 'Post a new snippet'
-.title
-  %h1 New Snippet
+!= partial :header
+%h2 New snippet
 != partial :flash_message
 .snippet-form
   %form{:method => 'post'}
