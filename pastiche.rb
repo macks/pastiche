@@ -89,7 +89,7 @@ class Pastiche < Sinatra::Base
       flash[:error] = snippet.errors.full_messages.join('. ')
       redirect url_for('/new')
     end
-    redirect "/#{snippet.id}"
+    redirect url_for("/#{snippet.id}")
   end
 
   # show a snippet
