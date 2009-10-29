@@ -14,6 +14,7 @@ require 'sass'
 require 'dm-core'
 require 'dm-validations'
 require 'dm-timestamps'
+require 'uv'
 
 class Pastiche < Sinatra::Base
 
@@ -50,6 +51,11 @@ class Pastiche < Sinatra::Base
   set :root, '.'
   set :static, true
 
+  set :uv_theme, 'iplastic'
+
+  # initialize Ultraviolet
+  @@syntaxes = Uv.syntaxes.sort.freeze
+
   before do
     # load sessions
     @authd_user = User.get(session[:user_id]) if session[:user_id]
@@ -67,6 +73,7 @@ class Pastiche < Sinatra::Base
   # post form
   get '/new' do
     permission_denied if not logged_in?
+    @syntaxes = @@syntaxes
     haml :new
   end
 

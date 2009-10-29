@@ -9,7 +9,9 @@
       %input{ :type => 'text', :name => 'title' }
     .snippet-type
       Type:
-      %input{ :type => 'text', :name => 'type' }
+      %select{ :type => 'text', :name => 'type' }
+        - @syntaxes.each do |syntax|
+          %option{ :value => syntax }= syntax.gsub(/_/, ' ')
     .snippet-comment
       Comment:
       %input{ :type => 'text', :name => 'comment' }

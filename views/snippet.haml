@@ -1,7 +1,5 @@
 != partial :header
 %h2= "Snippet #{@snippet.id}"
-:javascript
-  $(prettyPrint);
 .snippet
   %dl
     %dt Title
@@ -19,4 +17,7 @@
 
     %dt Last modified at
     %dd= @snippet.updated_at
-  %pre{:class => "prettyprint lang-#{@snippet.type}"}= @snippet.text
+
+    %dt Type
+    %dd= @snippet.type
+  !~ Uv.parse(@snippet.text, 'xhtml', @snippet.type, true, Pastiche.uv_theme)
