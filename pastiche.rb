@@ -72,7 +72,7 @@ class Pastiche < Sinatra::Base
 
   # post form
   get '/new' do
-    permission_denied if not logged_in?
+    redirect url_for('/login') if not logged_in?
     @syntaxes = @@syntaxes
     haml :new
   end
