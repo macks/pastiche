@@ -19,4 +19,4 @@
 
     %dt Type
     %dd= @snippet.type
-  !~ Uv.parse(@snippet.text, 'xhtml', @snippet.type, true, Pastiche.uv_theme)
+  !~ render_snippet(@snippet)

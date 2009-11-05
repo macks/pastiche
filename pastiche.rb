@@ -266,6 +266,14 @@ class Pastiche < Sinatra::Base
     def partial(name)
       haml "_#{name}".to_sym, :layout => false
     end
+
+    def render_snippet(snippet, options = {})
+      line_numbers = true
+      line_numbers = options[:line_numbers] if options.has_key?(:line_numbers)
+      text = snippet.text
+      text = text.lines.take(options[:lines]).join if options[:lines]
+      Uv.parse(text, 'xhtml', snippet.type, line_numbers, self.class.uv_theme)
+    end
   end
 
 
