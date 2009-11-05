@@ -216,6 +216,7 @@ class Pastiche < Sinatra::Base
   end
 
   def permission_denied
+    status 403
     halt(haml(:permission_denied))
   end
 
