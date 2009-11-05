@@ -151,7 +151,7 @@ class Pastiche < Sinatra::Base
       flash[:error] = 'Login canceled'
       redirect url_for('/login')
     when :success
-      openid = openid_response.display_identifier
+      openid = openid_response.identity_url
       nickname = params['openid.sreg.nickname']
       nickname ||= File.basename(openid)  # XXX: ad-hoc
       email = params['openid.sreg.email']
