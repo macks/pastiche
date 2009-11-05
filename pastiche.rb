@@ -36,7 +36,7 @@ class Pastiche < Sinatra::Base
     property :user_id,    Integer,  :nullable => false
     property :created_at, DateTime, :nullable => false, :auto_validation => false
     property :updated_at, DateTime, :nullable => false, :auto_validation => false
-    property :type,       String,   :nullable => false, :length => 16
+    property :type,       String,   :nullable => false, :length => 40
     property :title,      String,   :nullable => false, :length => 256
     property :comment,    String,   :length => 512
     property :text,       Text,     :nullable => false, :length => 65536
