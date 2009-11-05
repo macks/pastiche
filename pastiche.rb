@@ -75,7 +75,10 @@ class Pastiche < Sinatra::Base
 
   # post form
   get '/new' do
-    redirect url_for('/login') if not logged_in?
+    if not logged_in?
+      session[:return_path] = '/new'
+      redirect url_for('/login')
+    end
     @syntaxes = @@syntaxes
     haml :new
   end
@@ -83,21 +86,33 @@ class Pastiche < Sinatra::Base
   # create a snippet
   post '/new' do
     permission_denied if not logged_in?
-    text    = params[:text]
+    text    = params[:text].gsub(/\r\n/, "\n")
     title   = params[:title].strip
     type    = params[:type].strip
     comment = params[:comment].strip
-    snippet = @authd_user.snippets.create(:title => title, :type => type, :comment => comment, :text => text)
-    if snippet.dirty?
-      flash[:error] = snippet.errors.full_messages.join('. ')
+    if not @@syntaxes.include?(type)
+      flash[:error] = "Unknown type: #{type}"
       redirect url_for('/new')
     end
-    redirect url_for("/#{snippet.id}")
+    begin
+      text.unpack('U*')
+    rescue
+      flash[:error] = 'Unknown character(s) in snippet.'
+      redirect url_for('/new')
+    end
+    snippet = @authd_user.snippets.create(:title => title, :type => type, :comment => comment, :text => text)
+    if snippet.dirty?
+      flash[:error] = snippet.errors.full_messages.join('. ') + '.'
+      redirect url_for('/new')
+    else
+      redirect url_for("/#{snippet.id}")
+    end
   end
 
   # show a snippet
   get %r{\A/(\d+)\z} do |snippet_id|
     @snippet = Snippet.get(snippet_id)
+    redirect url_for('/') unless @snippet
     haml :snippet
   end
 
@@ -159,13 +174,13 @@ class Pastiche < Sinatra::Base
       if not user = User.first(:openid => openid)
         user = User.new(:openid => openid, :nickname => nickname, :email => email)
         unless user.save
-          flash[:error] = user.errors.full_messages.join('. ')
+          flash[:error] = user.errors.full_messages.join('. ') + '.'
           redirect url_for('/login')
         end
       end
       session[:user_id] = user.id
       flash[:info] = 'Login succeeded'
-      redirect url_for('/')
+      redirect url_for(session.delete(:return_path) || '/')
     end
   end
 
