@@ -203,7 +203,10 @@ class Pastiche < Sinatra::Base
     get '/login/:user_id' do |user_id|
       if user = User.get(user_id.to_i)
         session[:user_id] = user.id
-        user.openid
+        redirect url_for('/')
+      else
+        flash[:error] = 'Login failed'
+        redirect url_for('/login')
       end
     end
   end
@@ -241,8 +244,9 @@ class Pastiche < Sinatra::Base
   end
 
   def url_for(path)
+    return path if self.class.test?  # relative URL redirection for test environment.
     url = site_url
-    url = site_url.chop if path[0] == ?/
+    url = site_url.chomp('/')
     url + path
   end
 
