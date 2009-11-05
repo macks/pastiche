@@ -1,24 +1,27 @@
+// variables
+!rounded = 4px
+
 // mixins
 
 =rounded-border
-  -moz-border-radius: 4px
-  -webkit-border-radius: 4px
+  -moz-border-radius = !rounded
+  -webkit-border-radius = !rounded
 
 =rounded-border-topleft
-  -moz-border-radius-topleft: 4px
-  -webkit-border-top-left-radius: 4px
+  -moz-border-radius-topleft = !rounded
+  -webkit-border-top-left-radius = !rounded
 
 =rounded-border-topright
-  -moz-border-radius-topright: 4px
-  -webkit-border-top-right-radius: 4px
+  -moz-border-radius-topright = !rounded
+  -webkit-border-top-right-radius = !rounded
 
 =rounded-border-bottomleft
-  -moz-border-radius-bottomleft: 4px
-  -webkit-border-bottom-left-radius: 4px
+  -moz-border-radius-bottomleft = !rounded
+  -webkit-border-bottom-left-radius = !rounded
 
 =rounded-border-bottomright
-  -moz-border-radius-bottomright: 4px
-  -webkit-border-bottom-right-radius: 4px
+  -moz-border-radius-bottomright = !rounded
+  -webkit-border-bottom-right-radius = !rounded
 
 =rounded-box
   +rounded-border
@@ -32,6 +35,10 @@
   a:active, a:hover
     color: #66e
     text-decoration: underline
+
+=snippet-timestamp
+  font-size: 70%
+  color: #aaa
 
 
 // elements
@@ -66,11 +73,6 @@ input, select, option, textarea
 .clear
   clear: both
   height: 0
-
-input.openid-identifier
-  background: url(http://openid.net/images/login-bg.gif) no-repeat white 2px
-  padding-left: 20px
-  width: 16em
 
 .flash-message-box
   width: 400px
@@ -140,6 +142,14 @@ input.openid-identifier
       &:hover
         background: #777
 
+
+// specific elements
+
+input.openid-identifier
+  background: url(http://openid.net/images/login-bg.gif) no-repeat white 2px
+  padding-left: 20px
+  width: 16em
+
 ul.snippets
   list-style-type: none
   li
@@ -149,8 +159,7 @@ ul.snippets
     .author
       float: right
     .datetime
-      font-size: 70%
-      color: #aaa
+      +snippet-timestamp
     .body
       margin-top: 5px
 
@@ -163,8 +172,7 @@ ul.snippets
   .datetime
     float: right
     clear: right
-    font-size: 70%
-    color: #aaa
+    +snippet-timestamp
   .comment
     clear: left
     width: 60%
