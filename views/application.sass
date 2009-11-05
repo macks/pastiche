@@ -97,7 +97,7 @@ input.openid-identifier
     margin-left: 5px
 
 #main
-  margin: 20px 0 0 20px
+  margin: 20px
   font-size: 16px
 
 #login
@@ -126,3 +126,26 @@ input.openid-identifier
         text-decoration: none
       &:hover
         background: #777
+
+ul.snippets
+  list-style-type: none
+  li
+    +rounded-border
+    background: white
+    padding: 10px
+    margin-bottom: 20px
+    position: relative
+    a:link, a:visited
+      color: #66e
+      text-decoration: none
+    a:active, a:hover
+      color: #66e
+      text-decoration: underline
+    .title
+      float: left
+    .author
+      float: right
+    .modified-at
+      color: #aaa
+    .body
+      margin-top: 5px
