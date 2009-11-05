@@ -58,7 +58,10 @@ class Pastiche < Sinatra::Base
 
   before do
     # load sessions
-    @authd_user = User.get(session[:user_id]) if session[:user_id]
+    if session[:user_id]
+      @authd_user = User.get(session[:user_id])
+      session.delete(:user_id) unless @authd_user
+    end
 
     # clear useless sessions
     session.delete_if {|key, value| value.nil? }
@@ -193,7 +196,7 @@ class Pastiche < Sinatra::Base
   private
 
   def logged_in?
-    !! session[:user_id]
+    !! @authd_user
   end
 
   def permission_denied
