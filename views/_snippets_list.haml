@@ -6,7 +6,7 @@
       .author
         by
         %a{ :href => path_to("/user/#{snippet.user.nickname}") }= snippet.user.nickname
-        %span.modified-at= snippet.updated_at.strftime('%Y-%m-%d %H:%M')
+        %span.datetime= snippet.updated_at.strftime('%Y-%m-%d %H:%M')
       .clear
       .body{ :title => snippet.comment }
         !~ render_snippet(snippet, :lines => 3)

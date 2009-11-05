@@ -20,6 +20,19 @@
   -moz-border-radius-bottomright: 4px
   -webkit-border-bottom-right-radius: 4px
 
+=rounded-box
+  +rounded-border
+  background: white
+  padding: 10px
+  margin-bottom: 20px
+  position: relative
+  a:link, a:visited
+    color: #66e
+    text-decoration: none
+  a:active, a:hover
+    color: #66e
+    text-decoration: underline
+
 
 // elements
 
@@ -130,22 +143,34 @@ input.openid-identifier
 ul.snippets
   list-style-type: none
   li
-    +rounded-border
-    background: white
-    padding: 10px
-    margin-bottom: 20px
-    position: relative
-    a:link, a:visited
-      color: #66e
-      text-decoration: none
-    a:active, a:hover
-      color: #66e
-      text-decoration: underline
+    +rounded-box
     .title
       float: left
     .author
       float: right
-    .modified-at
+    .datetime
+      font-size: 70%
       color: #aaa
     .body
       margin-top: 5px
+
+.snippet
+  +rounded-box
+  .title
+    float: left
+  .author
+    float: right
+  .datetime
+    float: right
+    clear: right
+    font-size: 70%
+    color: #aaa
+  .comment
+    clear: left
+    width: 60%
+    padding: 2px
+    margin-left: 15px
+    font-size: 70%
+    text-height: 120%
+  .body
+    margin-top: 5px
