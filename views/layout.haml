@@ -2,8 +2,13 @@
 !!!
 %html
   %head
+    %meta{'http-equiv' => 'Content-Type', :content => 'text/html; charset=utf-8'}
     %title= (@page_title ? "#{@page_title} - " : '') + 'Pastiche'
     %link{:href => path_to("/uv/css/#{Pastiche.uv_theme}.css"), :type => 'text/css', :rel => 'stylesheet'}
+    %link{:href => path_to("/stylesheets/application.css"), :type => 'text/css', :rel => 'stylesheet'}
     %script{:type => 'text/javascript', :src => path_to('/javascripts/jquery.js')}
   %body
-    != yield
+    != partial :header
+    #main
+      != partial :flash_message
+      != yield

@@ -1,7 +1,5 @@
 - @page_title = 'Post a new snippet'
-!= partial :header
 %h2 New snippet
-!= partial :flash_message
 .snippet-form
   %form{:method => 'post'}
     .snippet-title
@@ -9,9 +7,10 @@
       %input{ :type => 'text', :name => 'title' }
     .snippet-type
       Type:
+      - @selected_type ||= 'plain_text'
       %select{ :type => 'text', :name => 'type' }
         - @syntaxes.each do |syntax|
-          %option{ :value => syntax }= syntax.gsub(/_/, ' ')
+          %option{ :value => syntax, :selected => (@selected_type == syntax) }= syntax.gsub(/_/, ' ')
     .snippet-comment
       Comment:
       %input{ :type => 'text', :name => 'comment' }

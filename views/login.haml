@@ -1,11 +1,9 @@
 - @page_title = 'Login'
-!= partial :header
 %h2 Login
-!= partial :flash_message
 .login-form
   %form{:method => 'post'}
     OpenID:
-    %input.openid_identifier{ :type => 'text', :name => 'openid_identifier' }
+    %input.openid-identifier{ :type => 'text', :name => 'openid_identifier' }
     %input{ :type => 'submit', :value => 'Login' }
   %p
     What is&nbsp;

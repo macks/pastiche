@@ -48,6 +48,7 @@ class Pastiche < Sinatra::Base
   enable :sessions
   set :path_prefix, nil
   set :haml, :escape_html => true
+  set :sass, :style => :expanded
   set :root, '.'
   set :static, true
 

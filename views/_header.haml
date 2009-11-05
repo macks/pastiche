@@ -1,18 +1,23 @@
-.header
-  %h1.logo
-    %a{ :href => path_to('/')} Pastiche
-  .description
-    %p Simple Pastebin Application
-  .top-menu
+#header
+  .title
+    %h1
+      %a{ :href => path_to('/')} Pastiche
+    .description
+      %p Simple Pastebin Application
+    .clear
+  #login
+    - if logged_in?
+      logged in as
+      %a{ :href => path_to("/user/#{@authd_user.nickname}") }= @authd_user.nickname
+    - else
+      %a{ :href => path_to('/login')} login
+  #navigations
     %ul
+      %li
+        %a{ :href => path_to('/new') } New snippet
       - if logged_in?
-        %li.user-link
-          %a{ :href => path_to("/user/#{@authd_user.nickname}") }>= @authd_user.nickname
-          \:
-        %li.command-link
-          %a{ :href => path_to('/new') } New snippet
-        %li.command-link
+        %li
+          %a{ :href => path_to("/user/#{@authd_user.nickname}") } Profile
+        %li
           %a{ :href => path_to('/logout') } Logout
-      - else
-        %li.command-link
-          %a{ :href => path_to('/login') } Login
+    .clear
