@@ -24,8 +24,12 @@
   -webkit-border-bottom-right-radius = !rounded
 
 =snippet-timestamp
-  font-size: 70%
+  font-size: 80%
   color: #aaa
+
+=form-base
+  border: solid 1px #aaa
+  padding: 2px
 
 
 // elements
@@ -51,8 +55,13 @@ h3
   margin: 10px 0
   font-size: 120%
 
-input, select, option, textarea
+input, textarea
+  +form-base
   font-size: 100%
+
+select
+  +form-base
+  font-size: 80%
 
 
 // classes
@@ -60,10 +69,18 @@ input, select, option, textarea
 .clear
   clear: both
 
+.invisible
+  display: none
+
+// placeholder text for input form (not used)
+  .placeholder
+    font-size: 80%
+    color: #aaa
+
 .flash-message-box
-  width: 400px
+  width: 70%
   border: solid 2px
-  background: #ccc
+  background: #ddd
   color: black
   margin: 10px 0
   padding: 5px
@@ -105,18 +122,40 @@ input, select, option, textarea
     width: 60%
     padding: 2px
     margin: 10px 15px
-    font-size: 70%
+    font-size: 80%
     text-height: 120%
   .snippet-links
     +rounded-border
     float: left
     clear: left
     background: #eee
-    font-size: 70%
+    font-size: 80%
     a
       padding: 0 15px
   .snippet-body
     margin-top: 5px
+
+.snippet-form
+  .snippet-filename
+    float: left
+  .snippet-type
+    float: right
+  input
+    margin: 5px 0
+    &.filename.placeholder
+      background: white url(../images/filename_placeholder.png) no-repeat 5px
+    &.comment.placeholder
+      background: white url(../images/comment_placeholder.png) no-repeat 5px
+    &.button
+      +rounded-border
+      padding: 5px
+      background: #ddd
+      &:hover
+        color: #ddd
+        background: #111
+  textarea.text
+    width: 100%
+    height: 20em
 
 
 // identifiers

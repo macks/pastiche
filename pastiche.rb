@@ -85,7 +85,6 @@ class Pastiche < Sinatra::Base
       session[:return_path] = '/new'
       redirect url_for('/login')
     end
-    @syntaxes = @@syntaxes
     haml :new
   end
 
@@ -96,7 +95,7 @@ class Pastiche < Sinatra::Base
     filename = params[:filename].strip
     type     = params[:type].strip
     comment  = params[:comment].strip
-    if not @@syntaxes.include?(type)
+    if not syntaxes.include?(type)
       flash[:error] = "Unknown type: #{type}"
       redirect url_for('/new')
     end
@@ -108,8 +107,9 @@ class Pastiche < Sinatra::Base
     end
     snippet = @authd_user.snippets.create(:filename => filename, :type => type, :comment => comment, :text => text)
     if snippet.dirty?
+      @text, @filename, @type, @comment = text, filename, type, comment
       flash[:error] = snippet.errors.full_messages.join('. ') + '.'
-      redirect url_for('/new')
+      haml :new
     else
       redirect url_for("/#{snippet.id}")
     end
@@ -290,6 +290,10 @@ class Pastiche < Sinatra::Base
 
   def flash
     @flash ||= Flash.new(session)
+  end
+
+  def syntaxes
+    @@syntaxes
   end
 
   helpers do

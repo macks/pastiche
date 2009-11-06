@@ -1,21 +1,31 @@
 - @page_title = 'Post a new snippet'
 %h2 New snippet
-.snippet-form
-  %form{:method => 'post'}
-    .snippet-filename
-      Filename:
-      %input{ :type => 'text', :name => 'filename' }
-    .snippet-type
-      Type:
-      - @selected_type ||= 'plain_text'
-      %select{ :type => 'text', :name => 'type' }
-        - @syntaxes.each do |syntax|
-          %option{ :value => syntax, :selected => (@selected_type == syntax) }= syntax.gsub(/_/, ' ')
-    .snippet-comment
-      Comment:
-      %input{ :type => 'text', :name => 'comment' }
-    .snippet-body
-      Text:
-      %br
-      %textarea{ :name => 'text', :cols => 60, :rows => 20 }
-    %input{ :type => 'submit', :value => 'Create' }
+.snippet-form.rounded-box
+  .content
+    %form{:method => 'post'}
+      .snippet-filename
+        %span.description Filename:
+        %input{ :class => 'filename with-placeholder', :type => :text, :name => :filename, :size => 16, :value => @filename }
+      .snippet-type
+        - @type ||= 'plain_text'
+        Type:
+        %select{ :class => :type, :type => :text, :name => :type }
+          - syntaxes.each do |syntax|
+            %option{ :value => syntax, :selected => (@type == syntax) }= syntax.gsub(/_/, ' ')
+      .clear
+      .snippet-comment
+        %span.description Comment:
+        %input{ :class => 'comment with-placeholder', :type => :text, :name => :comment, :size => 32, :value => @comment }
+      %textarea{ :class => :text, :name => :text }= @text
+      %input{ :class => :button, :type => :submit, :value => 'Create' }
+:javascript
+  $(function() {
+    $('.snippet-form .description').addClass('invisible');
+    $('input.with-placeholder').each(function() {
+      if (!this.value) { $(this).addClass('placeholder'); }
+    }).focus(function() {
+      $(this).removeClass('placeholder');
+    }).blur(function() {
+      if (!this.value) { $(this).addClass('placeholder'); }
+    });
+  });
