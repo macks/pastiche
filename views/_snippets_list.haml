@@ -1,12 +1,13 @@
 %ul.snippets
   - @snippets.each do |snippet|
-    %li
-      .snippet-title
-        %a{ :href => path_to("/#{snippet.id}"), :title => snippet.comment }= snippet.title
-      .snippet-author
-        by
-        %a{ :href => path_to("/user/#{snippet.user.nickname}") }= snippet.user.nickname
-        %span.snippet-datetime= snippet.updated_at.strftime('%Y-%m-%d %H:%M')
-      .clear
-      .snippet-body{ :title => snippet.comment }
-        !~ render_snippet(snippet, :lines => 3)
+    %li.snippet.rounded-box
+      .contents
+        .snippet-title
+          %a{ :href => path_to("/#{snippet.id}"), :title => snippet.comment }= snippet.title
+        .snippet-author
+          by
+          %a{ :href => path_to("/user/#{snippet.user.nickname}") }= snippet.user.nickname
+          %span.snippet-inline-datetime= snippet.updated_at.strftime('%Y-%m-%d %H:%M')
+        .clear
+        .snippet-body{ :title => snippet.comment }
+          !~ render_snippet(snippet, :lines => 3)

@@ -1,19 +1,19 @@
 %h2= @snippet.title
-.snippet
-  .snippet-title
-    %a{ :href => path_to("/#{@snippet.id}") }= @snippet.title
-  .snippet-author
-    by
-    %a{:href => path_to("/user/#{@snippet.user.nickname}") }= @snippet.user.nickname
-  .snippet-datetime
-    Modified at
-    = @snippet.updated_at.strftime('%Y-%m-%d %H:%M')
-  .snippet-datetime
-    Created at
-    = @snippet.created_at.strftime('%Y-%m-%d %H:%M')
-  - unless @snippet.comment.empty?
-    .snippet-comment
-      = @snippet.comment
-  .clear
-  .snippet-body
-    !~ render_snippet(@snippet)
+.rounded-box
+  .snippet.contents
+    .snippet-title
+      %a{ :href => path_to("/#{@snippet.id}") }= @snippet.title
+    .snippet-author
+      by
+      %a{:href => path_to("/user/#{@snippet.user.nickname}") }= @snippet.user.nickname
+    .snippet-datetime
+      Modified at
+      = @snippet.updated_at.strftime('%Y-%m-%d %H:%M')
+    .snippet-datetime
+      Created at
+      = @snippet.created_at.strftime('%Y-%m-%d %H:%M')
+    - unless @snippet.comment.empty?
+      .snippet-comment= @snippet.comment
+    .clear
+    .snippet-body
+      !~ render_snippet(@snippet)

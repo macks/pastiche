@@ -23,17 +23,20 @@
   -moz-border-radius-bottomright = !rounded
   -webkit-border-bottom-right-radius = !rounded
 
-=rounded-box
+.rounded-box
   +rounded-border
   background: white
   padding: 10px
-  margin-bottom: 20px
+  margin: 20px 0
   a:link, a:visited
     color: #66e
     text-decoration: none
   a:active, a:hover
     color: #66e
     text-decoration: underline
+  .contents
+    width: 100%
+    overflow: auto
 
 =snippet-timestamp
   font-size: 70%
@@ -149,7 +152,6 @@ input.openid-identifier
 ul.snippets
   list-style-type: none
   li
-    +rounded-box
     .snippet-title
       float: left
     .snippet-author
@@ -160,7 +162,6 @@ ul.snippets
       margin-top: 5px
 
 .snippet
-  +rounded-box
   .snippet-title
     float: left
   .snippet-author
