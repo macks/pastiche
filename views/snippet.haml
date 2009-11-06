@@ -14,6 +14,11 @@
       = @snippet.created_at.strftime('%Y-%m-%d %H:%M')
     - unless @snippet.comment.empty?
       .snippet-comment= @snippet.comment
+    .snippet-links
+      %a{ :href => path_to("/#{@snippet.id}/download") } download
+      %a{ :href => path_to("/#{@snippet.id}/raw") } raw
+      - if logged_in? && @snippet.user == @authd_user
+        %a{ :href => path_to("/#{@snippet.id}/edit") } edit
     .clear
     .snippet-body
       !~ render_snippet(@snippet)

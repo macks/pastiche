@@ -117,6 +117,31 @@ class Pastiche < Sinatra::Base
     haml :snippet
   end
 
+  # download a snippet
+  get %r{\A/(\d+)/download\z} do |snippet_id|
+    @snippet = Snippet.get(snippet_id)
+    redirect url_for('/') unless @snippet
+    content_type 'text/plain'
+    attachment "#{snippet_id}.txt"  # XXX: ad-hoc
+    @snippet.text
+  end
+
+  # show a raw snippet
+  get %r{\A/(\d+)/raw\z} do |snippet_id|
+    @snippet = Snippet.get(snippet_id)
+    redirect url_for('/') unless @snippet
+    content_type 'text/plain'
+    @snippet.text
+  end
+
+  # edit a snippet
+  get %r{\A/(\d+)/edit\z} do |snippet_id|
+    redirect url_for('/')  # TODO: not implemented
+    @snippet = Snippet.get(snippet_id)
+    redirect url_for('/') unless @snippet
+    haml :edit
+  end
+
   # show user information
   get '/user/:user' do |user|
     @user = User.first(:nickname => user)
