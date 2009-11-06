@@ -35,24 +35,24 @@ describe 'Pastiche' do
   it 'returns a snippet at /ID' do
     login
     snippet = @user.snippets.create(
-      :title   => 'Snippet title',
-      :type    => 'plain_text',
-      :comment => 'Snippet comment',
-      :text    => 'Snippet body'
+      :filename => 'Filename.txt',
+      :type     => 'plain_text',
+      :comment  => 'Snippet comment',
+      :text     => 'Snippet body'
     )
     visit "/#{snippet.id}"
     last_response.should be_ok
     last_response.should have_selector('pre', :content => 'Snippet body')
-    last_response.should contain('Snippet title')
+    last_response.should contain('Filename.txt')
     last_response.should contain('Snippet comment')
   end
 
   it 'creates a new snippet when posted at /new' do
     login
     click_link 'New snippet'
-    fill_in 'title',   :with => 'New title'
-    fill_in 'comment', :with => 'New comment'
-    fill_in 'text',    :with => 'New snippet body'
+    fill_in 'filename', :with => 'NewFile.txt'
+    fill_in 'comment',  :with => 'New comment'
+    fill_in 'text',     :with => 'New snippet body'
     select  'plain text', :from => 'type'
     click_button 'Create'
 
@@ -67,7 +67,7 @@ describe 'Pastiche' do
   end
 
   it 'occurs 403 error when unauthorized user try to post' do
-    visit '/new', :post, :title => 'New title', :type => 'plain_text', :comment => '', :text => 'text'
+    visit '/new', :post, :filename => 'filename.ext', :type => 'plain_text', :comment => '', :text => 'text'
     last_response.should_not be_ok
     last_response.status.should == 403
   end

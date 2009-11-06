@@ -2,9 +2,9 @@
 %h2 New snippet
 .snippet-form
   %form{:method => 'post'}
-    .snippet-title
-      Title:
-      %input{ :type => 'text', :name => 'title' }
+    .snippet-filename
+      Filename:
+      %input{ :type => 'text', :name => 'filename' }
     .snippet-type
       Type:
       - @selected_type ||= 'plain_text'
@@ -15,7 +15,7 @@
       Comment:
       %input{ :type => 'text', :name => 'comment' }
     .snippet-body
-      Snippet:
+      Text:
       %br
       %textarea{ :name => 'text', :cols => 60, :rows => 20 }
     %input{ :type => 'submit', :value => 'Create' }

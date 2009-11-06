@@ -2,8 +2,8 @@
   - @snippets.each do |snippet|
     %li.snippet.rounded-box
       .contents
-        .snippet-title
-          %a{ :href => path_to("/#{snippet.id}"), :title => snippet.comment }= snippet.title
+        .snippet-filename
+          %a{ :href => path_to("/#{snippet.id}"), :title => snippet.comment }= snippet.filename
         .snippet-author
           by
           %a{ :href => path_to("/user/#{snippet.user.nickname}") }= snippet.user.nickname

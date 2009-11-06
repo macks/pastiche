@@ -23,7 +23,7 @@ class Pastiche < Sinatra::Base
     property :id,         Serial
     property :openid,     String,   :nullable => false, :length => 256, :unique_index => :openid
     property :nickname,   String,   :nullable => false, :length => 16, :unique_index => :nickname
-    property :email,      String,   :length => 64
+    property :email,      String,   :length => 128
     property :created_at, DateTime, :nullable => false, :auto_validation => false
     property :updated_at, DateTime, :nullable => false, :auto_validation => false
 
@@ -37,7 +37,7 @@ class Pastiche < Sinatra::Base
     property :created_at, DateTime, :nullable => false, :auto_validation => false
     property :updated_at, DateTime, :nullable => false, :auto_validation => false
     property :type,       String,   :nullable => false, :length => 40
-    property :title,      String,   :nullable => false, :length => 256
+    property :filename,   String,   :nullable => false, :length => 128
     property :comment,    String,   :length => 512
     property :text,       Text,     :nullable => false, :length => 65536
 
@@ -87,10 +87,10 @@ class Pastiche < Sinatra::Base
   # create a snippet
   post '/new' do
     permission_denied if not logged_in?
-    text    = params[:text].gsub(/\r\n/, "\n")
-    title   = params[:title].strip
-    type    = params[:type].strip
-    comment = params[:comment].strip
+    text     = params[:text].gsub(/\r\n/, "\n")
+    filename = params[:filename].strip
+    type     = params[:type].strip
+    comment  = params[:comment].strip
     if not @@syntaxes.include?(type)
       flash[:error] = "Unknown type: #{type}"
       redirect url_for('/new')
@@ -101,7 +101,7 @@ class Pastiche < Sinatra::Base
       flash[:error] = 'Unknown character(s) in snippet.'
       redirect url_for('/new')
     end
-    snippet = @authd_user.snippets.create(:title => title, :type => type, :comment => comment, :text => text)
+    snippet = @authd_user.snippets.create(:filename => filename, :type => type, :comment => comment, :text => text)
     if snippet.dirty?
       flash[:error] = snippet.errors.full_messages.join('. ') + '.'
       redirect url_for('/new')
@@ -122,12 +122,12 @@ class Pastiche < Sinatra::Base
     @snippet = Snippet.get(snippet_id)
     redirect url_for('/') unless @snippet
     content_type 'text/plain'
-    attachment "#{snippet_id}.txt"  # XXX: ad-hoc
+    attachment @snippet.filename
     @snippet.text
   end
 
   # show a raw snippet
-  get %r{\A/(\d+)/raw\z} do |snippet_id|
+  get %r{\A/(\d+)/raw(?:\z|/)} do |snippet_id|
     @snippet = Snippet.get(snippet_id)
     redirect url_for('/') unless @snippet
     content_type 'text/plain'

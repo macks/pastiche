@@ -1,8 +1,9 @@
-%h2= @snippet.title
+- @page_title = @snippet.filename
+%h2= @snippet.filename
 .rounded-box
   .snippet.contents
-    .snippet-title
-      %a{ :href => path_to("/#{@snippet.id}") }= @snippet.title
+    .snippet-filename
+      %a{ :href => path_to("/#{@snippet.id}") }= @snippet.filename
     .snippet-author
       by
       %a{:href => path_to("/user/#{@snippet.user.nickname}") }= @snippet.user.nickname
@@ -16,7 +17,7 @@
       .snippet-comment= @snippet.comment
     .snippet-links
       %a{ :href => path_to("/#{@snippet.id}/download") } download
-      %a{ :href => path_to("/#{@snippet.id}/raw") } raw
+      %a{ :href => path_to("/#{@snippet.id}/raw/#{@snippet.filename}") } raw
       - if logged_in? && @snippet.user == @authd_user
         %a{ :href => path_to("/#{@snippet.id}/edit") } edit
     .clear
