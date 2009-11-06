@@ -4,3 +4,12 @@
 - if flash[:info]
   .flash-message-box.information-message
     = flash[:info]
+- if flash[:error] || flash[:info]
+  :javascript
+    setTimeout(function() {
+      var props = {};
+      $.each(['height', 'marginTop', 'marginBottom', 'paddingTop', 'paddingBottom', 'opacity'], function() {
+        props[this] = 'hide';
+      });
+      $('.flash-message-box').animate(props, 500);
+    }, 5000);
