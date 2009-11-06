@@ -5,13 +5,13 @@
     .description
       %p Simple Pastebin Application
     .clear
-  #login
-    - if logged_in?
-      logged in as
-      %a{ :href => path_to("/user/#{@authd_user.nickname}") }= @authd_user.nickname
-    - else
-      %a{ :href => path_to('/login')} login
   #navigations
+    #login
+      - if logged_in?
+        logged in as
+        %a{ :href => path_to("/user/#{@authd_user.nickname}") }= @authd_user.nickname
+      - else
+        %a{ :href => path_to('/login')} login
     %ul
       %li
         %a{ :href => path_to('/new') } New snippet

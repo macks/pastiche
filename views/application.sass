@@ -28,7 +28,6 @@
   background: white
   padding: 10px
   margin-bottom: 20px
-  position: relative
   a:link, a:visited
     color: #66e
     text-decoration: none
@@ -72,7 +71,6 @@ input, select, option, textarea
 
 .clear
   clear: both
-  height: 0
 
 .flash-message-box
   width: 400px
@@ -92,7 +90,6 @@ input, select, option, textarea
 // identifiers
 
 #header
-  position: relative
   background: #333
   padding: 20px 0 0 20px
   h1
@@ -116,9 +113,8 @@ input, select, option, textarea
   font-size: 16px
 
 #login
-  position: absolute
-  bottom: 5px
-  right: 5px
+  float: right
+  padding: 5px 10px
   color: white
   a:link, a:visited, a:active, a:hover
     color: white
@@ -154,31 +150,31 @@ ul.snippets
   list-style-type: none
   li
     +rounded-box
-    .title
+    .snippet-title
       float: left
-    .author
+    .snippet-author
       float: right
-    .datetime
+    .snippet-datetime
       +snippet-timestamp
     .body
       margin-top: 5px
 
 .snippet
   +rounded-box
-  .title
+  .snippet-title
     float: left
-  .author
+  .snippet-author
     float: right
-  .datetime
+  .snippet-datetime
     float: right
     clear: right
     +snippet-timestamp
-  .comment
+  .snippet-comment
     clear: left
     width: 60%
     padding: 2px
     margin-left: 15px
     font-size: 70%
     text-height: 120%
-  .body
+  .snippet-body
     margin-top: 5px
