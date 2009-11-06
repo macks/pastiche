@@ -79,39 +79,27 @@ class Pastiche < Sinatra::Base
     haml :index
   end
 
-  # post form
+  # show form
   get '/new' do
     if not logged_in?
       session[:return_path] = '/new'
       redirect url_for('/login')
     end
+    @snippet = Snippet.new
     haml :new
   end
 
   # create a snippet
   post '/new' do
     permission_denied if not logged_in?
-    text     = params[:text].gsub(/\r\n/, "\n")
-    filename = params[:filename].strip
-    type     = params[:type].strip
-    comment  = params[:comment].strip
-    if not syntaxes.include?(type)
-      flash[:error] = "Unknown type: #{type}"
-      redirect url_for('/new')
-    end
-    begin
-      text.unpack('U*')
-    rescue
-      flash[:error] = 'Unknown character(s) in snippet.'
-      redirect url_for('/new')
-    end
-    snippet = @authd_user.snippets.create(:filename => filename, :type => type, :comment => comment, :text => text)
-    if snippet.dirty?
-      @text, @filename, @type, @comment = text, filename, type, comment
-      flash[:error] = snippet.errors.full_messages.join('. ') + '.'
+    props = validate_snippet_parameters
+    @snippet = @authd_user.snippets.create(props)
+    if @snippet.dirty?
+      flash[:error] = @snippet.errors.full_messages.join('. ') + '.'
       haml :new
     else
-      redirect url_for("/#{snippet.id}")
+      flash[:info] = 'Created'
+      redirect url_for("/#{@snippet.id}")
     end
   end
 
@@ -141,10 +129,32 @@ class Pastiche < Sinatra::Base
 
   # edit a snippet
   get %r{\A/(\d+)/edit\z} do |snippet_id|
-    redirect url_for('/')  # TODO: not implemented
+    permission_denied if not logged_in?
     @snippet = Snippet.get(snippet_id)
     redirect url_for('/') unless @snippet
+    permission_denied if @snippet.user != @authd_user
     haml :edit
+  end
+
+  # update a snippet
+  post %r{\A/(\d+)/edit\z} do |snippet_id|
+    permission_denied if not logged_in?
+    @snippet = Snippet.get(snippet_id)
+    redirect url_for('/') unless @snippet
+    permission_denied if @snippet.user != @authd_user
+    if params[:cancel] && !params[:cancel].empty?
+      flash[:info] = 'Canceled'
+      redirect url_for("/#{@snippet.id}")
+    end
+    props = validate_snippet_parameters
+    @snippet.update(props)
+    if @snippet.dirty?
+      flash[:error] = @snippet.errors.full_messages.join('. ') + '.'
+      haml :edit
+    else
+      flash[:info] = 'Updated'
+      redirect url_for("/#{@snippet.id}")
+    end
   end
 
   # show user information
@@ -155,6 +165,7 @@ class Pastiche < Sinatra::Base
 
   # show user configuration form
   get '/user/:user/config' do |user|
+    # TODO: not implemented
     permission_denied if !user[:session] || user[:session].nickname != user
     @user = @authd_user
     haml :user_config
@@ -253,6 +264,27 @@ class Pastiche < Sinatra::Base
     halt(haml(:permission_denied))
   end
 
+  def validate_snippet_parameters
+    params[:filename].strip!
+    params[:type].strip!
+    params[:comment].strip!
+    params[:text].gsub!(/\r\n/, "\n")
+
+    if not syntaxes.include?(params[:type])
+      flash[:error] = "Unknown type: #{params[:type]}"
+      redirect url_for('/new')
+    end
+
+    begin
+      params[:text].unpack('U*')
+    rescue
+      flash[:error] = 'Unknown character(s) in snippet.'
+      redirect url_for('/new')
+    end
+
+    [:filename, :type, :comment, :text].inject({}) {|hash, key| hash[key] = params[key]; hash}
+  end
+
   def openid_consumer
     rootdir = self.class.root || '.'
     storage = OpenID::Store::Filesystem.new(File.join(rootdir, 'tmp'))
@@ -319,7 +351,11 @@ class Pastiche < Sinatra::Base
     end
 
     def [](key)
-      @cache[key] ||= @session[:flash].delete(key)
+      if value = @session[:flash].delete(key)
+        @cache[key] = value
+      else
+        @cache[key]
+      end
     end
 
     def []=(key, value)

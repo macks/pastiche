@@ -138,22 +138,23 @@ select
 .snippet-form
   .snippet-filename
     float: left
+    input.placeholder
+      background: white url(../images/filename_placeholder.png) no-repeat 5px
   .snippet-type
     float: right
+  .snippet-comment
+    input.placeholder
+      background: white url(../images/comment_placeholder.png) no-repeat 5px
   input
     margin: 5px 0
-    &.filename.placeholder
-      background: white url(../images/filename_placeholder.png) no-repeat 5px
-    &.comment.placeholder
-      background: white url(../images/comment_placeholder.png) no-repeat 5px
-    &.button
-      +rounded-border
-      padding: 5px
-      background: #ddd
-      &:hover
-        color: #ddd
-        background: #111
-  textarea.text
+  input[type=submit]
+    +rounded-border
+    padding: 5px
+    background: #ddd
+    &:hover
+      color: #ddd
+      background: #111
+  textarea
     width: 100%
     height: 20em
 

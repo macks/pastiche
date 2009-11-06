@@ -1,31 +1,7 @@
-- @page_title = 'Post a new snippet'
+- @page_title = 'New snippet'
 %h2 New snippet
-.snippet-form.rounded-box
+.rounded-box
   .content
-    %form{:method => 'post'}
-      .snippet-filename
-        %span.description Filename:
-        %input{ :class => 'filename with-placeholder', :type => :text, :name => :filename, :size => 16, :value => @filename }
-      .snippet-type
-        - @type ||= 'plain_text'
-        Type:
-        %select{ :class => :type, :type => :text, :name => :type }
-          - syntaxes.each do |syntax|
-            %option{ :value => syntax, :selected => (@type == syntax) }= syntax.gsub(/_/, ' ')
-      .clear
-      .snippet-comment
-        %span.description Comment:
-        %input{ :class => 'comment with-placeholder', :type => :text, :name => :comment, :size => 32, :value => @comment }
-      %textarea{ :class => :text, :name => :text }= @text
-      %input{ :class => :button, :type => :submit, :value => 'Create' }
-:javascript
-  $(function() {
-    $('.snippet-form .description').addClass('invisible');
-    $('input.with-placeholder').each(function() {
-      if (!this.value) { $(this).addClass('placeholder'); }
-    }).focus(function() {
-      $(this).removeClass('placeholder');
-    }).blur(function() {
-      if (!this.value) { $(this).addClass('placeholder'); }
-    });
-  });
+    - @submit_button = 'Create'
+    - @cancel_button = false
+    != partial :form
