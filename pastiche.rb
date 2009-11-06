@@ -28,6 +28,9 @@ class Pastiche < Sinatra::Base
     property :updated_at, DateTime, :nullable => false, :auto_validation => false
 
     has n, :snippets
+
+    validates_format :nickname, :with => /\A[\w\-]+\z/
+    validates_format :email,    :as => :email_address
   end
 
   class Snippet
@@ -40,6 +43,8 @@ class Pastiche < Sinatra::Base
     property :filename,   String,   :nullable => false, :length => 128
     property :comment,    String,   :length => 512
     property :text,       Text,     :nullable => false, :length => 65536
+
+    validates_format :filename, :with => /\A[^\/]+\z/
 
     belongs_to :user
   end
