@@ -23,21 +23,6 @@
   -moz-border-radius-bottomright = !rounded
   -webkit-border-bottom-right-radius = !rounded
 
-.rounded-box
-  +rounded-border
-  background: white
-  padding: 10px
-  margin: 20px 0
-  a:link, a:visited
-    color: #66e
-    text-decoration: none
-  a:active, a:hover
-    color: #66e
-    text-decoration: underline
-  .contents
-    width: 100%
-    overflow: auto
-
 =snippet-timestamp
   font-size: 70%
   color: #aaa
@@ -88,6 +73,42 @@ input, select, option, textarea
 
 .information-message
   border-color: #111
+
+.rounded-box
+  +rounded-border
+  background: white
+  padding: 10px
+  margin: 20px 0
+  a:link, a:visited
+    color: #66e
+    text-decoration: none
+  a:active, a:hover
+    color: #66e
+    text-decoration: underline
+  .contents
+    width: 100%
+    overflow: auto
+
+.snippet
+  .snippet-title
+    float: left
+  .snippet-author
+    float: right
+  .snippet-inline-datetime
+    +snippet-timestamp
+  .snippet-datetime
+    +snippet-timestamp
+    float: right
+    clear: right
+  .snippet-comment
+    clear: left
+    width: 60%
+    padding: 2px
+    margin: 10px 15px
+    font-size: 70%
+    text-height: 120%
+  .snippet-body
+    margin-top: 5px
 
 
 // identifiers
@@ -151,31 +172,3 @@ input.openid-identifier
 
 ul.snippets
   list-style-type: none
-  li
-    .snippet-title
-      float: left
-    .snippet-author
-      float: right
-    .snippet-datetime
-      +snippet-timestamp
-    .body
-      margin-top: 5px
-
-.snippet
-  .snippet-title
-    float: left
-  .snippet-author
-    float: right
-  .snippet-datetime
-    float: right
-    clear: right
-    +snippet-timestamp
-  .snippet-comment
-    clear: left
-    width: 60%
-    padding: 2px
-    margin-left: 15px
-    font-size: 70%
-    text-height: 120%
-  .snippet-body
-    margin-top: 5px
