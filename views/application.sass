@@ -59,6 +59,13 @@ input, textarea
   +form-base
   font-size: 100%
 
+input[type=submit]
+  +rounded-border
+  background: #ddd
+  &:hover
+    color: #ddd
+    background: #111
+
 select
   +form-base
   font-size: 80%
@@ -148,12 +155,7 @@ select
   input
     margin: 5px 0
   input[type=submit]
-    +rounded-border
     padding: 5px
-    background: #ddd
-    &:hover
-      color: #ddd
-      background: #111
   textarea
     width: 100%
     height: 20em
