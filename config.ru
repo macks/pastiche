@@ -7,7 +7,7 @@ require 'pastiche'
 Pastiche.instance_eval do
   # You should change the secret.
   disable :sessions
-  use Rack::Session::Cookie, :secret => '__secret__'
+  use Rack::Session::Cookie, :secret => '__secret__', :expire_after => nil
 
   # Set path_prefix when the app is mounted sub-directory.
   #set :path_prefix, '/pastiche'
