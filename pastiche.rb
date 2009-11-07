@@ -329,13 +329,6 @@ class Pastiche < Sinatra::Base
       redirect url_for('/new')
     end
 
-    begin
-      params[:text].unpack('U*')
-    rescue
-      flash[:error] = 'Unknown character(s) in snippet.'
-      redirect url_for('/new')
-    end
-
     [:filename, :type, :comment, :text].inject({}) {|hash, key| hash[key] = params[key]; hash}
   end
 
