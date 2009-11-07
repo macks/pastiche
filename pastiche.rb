@@ -251,7 +251,7 @@ class Pastiche < Sinatra::Base
     redirect url_for('/') unless props
     session[:openid] = props[:openid]
     @user = User.new(props)
-    if !@user.nickname.empty? && User.first(:nickname => @user.nickname)
+    if User.first(:nickname => @user.nickname)
       flash[:error] = "Nickname `#{@user.nickname}' is already used by another user. Please try other name."
     end
     haml :new_user
@@ -264,7 +264,7 @@ class Pastiche < Sinatra::Base
     fullname = params[:fullname].strip
     email    = params[:email].strip
     @user = User.new(:openid => openid, :nickname => nickname, :fullname => fullname, :email => email)
-    if !@user.nickname.empty? && User.first(:nickname => @user.nickname)
+    if User.first(:nickname => @user.nickname)
       flash[:error] = "Nickname `#{@user.nickname}' is already used by another user. Please try other name."
       haml :new_user
     else
