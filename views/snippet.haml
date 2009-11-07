@@ -2,7 +2,7 @@
 .rounded-box
   .snippet.contents
     .snippet-filename
-      %a{ :href => path_to("/#{@snippet.id}") }= @snippet.filename
+      = @snippet.filename
     .snippet-author
       by
       %a{:href => path_to("/user/#{@snippet.user.nickname}") }= @snippet.user.nickname
