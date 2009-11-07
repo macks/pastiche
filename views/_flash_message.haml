@@ -4,13 +4,3 @@
 - if flash[:info]
   .flash-message-box.information-message
     = flash[:info]
-- if flash[:error] || flash[:info]
-  :javascript
-    $(function() {
-      $('.flash-message-box').each(function() {
-        var box = $(this);
-        var button = $(document.createElement('div'));
-        box.append(button);
-        button.addClass('close-button').append('&times;').attr('title', 'close').click(function() { box.hide(); });
-      });
-    });

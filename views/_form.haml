@@ -1,6 +1,6 @@
 %form{ :class => 'snippet-form', :method => :post }
   .snippet-filename
-    %span.description Filename:
+    %span.to-be-invisible Filename:
     %input{ :class => :placeholder, :type => :text, :name => :filename, :size => 16, :value => @snippet.filename }
   .snippet-type
     - type = @snippet.type || 'plain_text'
@@ -10,20 +10,9 @@
         %option{ :value => syntax, :selected => (type == syntax) }= syntax.gsub(/_/, ' ')
   .clear
   .snippet-comment
-    %span.description Comment:
+    %span.to-be-invisible Comment:
     %input{ :class => :placeholder, :type => :text, :name => :comment, :size => 32, :value => @snippet.comment }
   %textarea{ :name => :text }= @snippet.text
   %input{ :type => :submit, :value => @submit_button }
   - if @cancel_button
     %input{ :type => :submit, :name => :cancel, :value => 'Cancel' }
-:javascript
-  $(function() {
-    $('.snippet-form .description').addClass('invisible');
-    $('input.placeholder').each(function() {
-      if (this.value) { $(this).removeClass('placeholder'); }
-    }).focus(function() {
-      $(this).removeClass('placeholder');
-    }).blur(function() {
-      if (!this.value) { $(this).addClass('placeholder'); }
-    });
-  });
