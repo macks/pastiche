@@ -8,10 +8,10 @@
       %a{:href => path_to("/user/#{@snippet.user.nickname}") }= @snippet.user.nickname
     .snippet-datetime
       Modified at
-      = @snippet.updated_at.strftime('%Y-%m-%d %H:%M')
+      = render_datetime(@snippet.updated_at)
     .snippet-datetime
       Created at
-      = @snippet.created_at.strftime('%Y-%m-%d %H:%M')
+      = render_datetime(@snippet.created_at)
     - unless @snippet.comment.empty?
       .snippet-comment= @snippet.comment
     .snippet-links

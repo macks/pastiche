@@ -397,6 +397,11 @@ class Pastiche < Sinatra::Base
     @@syntaxes
   end
 
+  def timezone
+    # TODO: support user's timezone
+    @timezone ||= Rational(Time.now.utc_offset, 86400)
+  end
+
   helpers do
     def partial(name)
       haml "_#{name}".to_sym, :layout => false
@@ -408,6 +413,10 @@ class Pastiche < Sinatra::Base
       text = snippet.text
       text = text.lines.take(options[:lines]).join if options[:lines]
       Uv.parse(text, 'xhtml', snippet.type, line_numbers, self.class.uv_theme)
+    end
+
+    def render_datetime(dt)
+      dt.new_offset(timezone).strftime('%Y-%m-%d %H:%M')
     end
   end
 
