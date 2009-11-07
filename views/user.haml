@@ -15,6 +15,10 @@
     %dl
       %dt Joined at
       %dd= @user.created_at.strftime('%Y-%m-%d %H:%M')
+    - if @user == @authd_user
+      .links
+        %a{ :href => path_to("/user/#{@user.nickname}/edit") } edit
+      .clear
 
 %h3 Posted snippets
 - @snippets = @user.snippets

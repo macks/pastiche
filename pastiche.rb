@@ -143,7 +143,7 @@ class Pastiche < Sinatra::Base
     @snippet = Snippet.get(snippet_id)
     redirect url_for('/') unless @snippet
     permission_denied if @snippet.user != @authd_user
-    if params[:cancel] && !params[:cancel].empty?
+    if !params[:cancel].blank?
       flash[:info] = 'Canceled'
       redirect url_for("/#{@snippet.id}")
     end
@@ -161,15 +161,34 @@ class Pastiche < Sinatra::Base
   # show user information
   get '/user/:user' do |user|
     @user = User.first(:nickname => user)
+    redirect url_for('/') unless @user
     haml :user
   end
 
-  # show user configuration form
-  get '/user/:user/config' do |user|
-    # TODO: not implemented
-    permission_denied if !user[:session] || user[:session].nickname != user
+  # show user edit form
+  get '/user/:user/edit' do |user|
     @user = @authd_user
-    haml :user_config
+    permission_denied if ! logged_in? || @user.nickname != user
+    haml :edit_user
+  end
+
+  # update user information
+  post '/user/:user/edit' do |user|
+    @user = @authd_user
+    permission_denied if ! logged_in? || @user.nickname != user
+    if ! params[:cancel].blank?
+      flash[:info] = 'Canceled'
+      redirect url_for("/user/#{@user.nickname}")
+    end
+    @user.fullname = params[:fullname].strip
+    @user.email    = params[:email].strip
+    if @user.save
+      flash[:info] = 'Your user information was updated.'
+      redirect url_for("/user/#{@user.nickname}")
+    else
+      flash[:error] = @user.errors.full_messages.join('. ') + '.'
+      haml :edit_user
+    end
   end
 
   # login form

@@ -1,0 +1,20 @@
+- @page_title = 'Edit user information'
+%h2= @page_title
+.rounded-box
+  .content
+    %form{ :class => 'user-form', :method => :post }
+      %dl
+        %dt OpenID
+        %dd
+          = @user.openid
+        %dt Nickname
+        %dd
+          = @user.nickname
+        %dt Fullname
+        %dd
+          %input{ :type => :text, :name => :fullname, :size => 32, :value => @user.fullname }
+        %dt Email
+        %dd
+          %input{ :type => :text, :name => :email, :size => 32, :value => @user.email }
+      %input{ :type => :submit, :value => 'Update' }
+      %input{ :type => :submit, :name => :cancel, :value => 'Cancel' }
