@@ -4,6 +4,8 @@
 # Simple pastebin-like application using Sinatra with OpenID authentication
 #
 
+$KCODE = 'u' if RUBY_VERSION < '1.9'
+
 require 'rubygems'
 require 'sinatra/base'
 require 'openid'
