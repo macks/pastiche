@@ -1,0 +1,19 @@
+- @page_title = 'New user'
+%h2 New user
+.rounded-box
+  .content
+    %form{ :class => 'user-form', :method => :post }
+      %dl
+        %dt OpenID
+        %dd
+          = @user.openid
+        %dt Nickname
+        %dd
+          %input{ :type => :text, :name => :nickname, :size => 18, :value => @user.nickname }
+        %dt Fullname (optional)
+        %dd
+          %input{ :type => :text, :name => :fullname, :size => 32, :value => @user.fullname }
+        %dt Email (optional)
+        %dd
+          %input{ :type => :text, :name => :email, :size => 32, :value => @user.email }
+      %input{ :type => :submit, :value => 'Create' }

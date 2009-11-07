@@ -76,14 +76,12 @@ describe 'Pastiche' do
     login
     visit "/user/#{@user.nickname}"
     last_response.should be_ok
-    last_response.should contain('Profile')
-    last_response.should contain(@user.openid)
+    last_response.should contain(@user.fullname)
 
     click_link 'Logout'
     visit "/user/#{@user.nickname}"
     last_response.should be_ok
-    last_response.should contain('Profile')
-    last_response.should contain(@user.openid)
+    last_response.should contain(@user.fullname)
   end
 
   it 'clears user session at /logout' do
@@ -100,7 +98,7 @@ describe 'Pastiche' do
 
   def login(id = rand(1000))
     openid = 'http://openid.example.com/user%03d' % id
-    @user = Pastiche::User.create(:openid => openid, :nickname => "user#{id}")
+    @user = Pastiche::User.create(:openid => openid, :nickname => "user#{id}", :fullname => "John Smith #{id}")
     visit "/login/#{@user.id}"
     last_response.should contain('logged in as')
   end

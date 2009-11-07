@@ -23,6 +23,7 @@ class Pastiche < Sinatra::Base
     property :id,         Serial
     property :openid,     String,   :nullable => false, :length => 256, :unique_index => :openid
     property :nickname,   String,   :nullable => false, :length => 16, :unique_index => :nickname
+    property :fullname,   String,   :length => 128
     property :email,      String,   :length => 128
     property :created_at, DateTime, :nullable => false, :auto_validation => false
     property :updated_at, DateTime, :nullable => false, :auto_validation => false
@@ -184,7 +185,7 @@ class Pastiche < Sinatra::Base
     begin
       checkid_request = openid_consumer.begin(identifier)
       sreg_request = OpenID::SReg::Request.new
-      sreg_request.request_fields(%w(nickname email))
+      sreg_request.request_fields(%w(nickname fullname email))
       checkid_request.add_extension(sreg_request)
       redirect checkid_request.redirect_url(url, url_for('/login/complete'))
     rescue
@@ -209,20 +210,54 @@ class Pastiche < Sinatra::Base
       redirect url_for('/login')
     when :success
       openid = openid_response.identity_url
-      nickname = params['openid.sreg.nickname']
-      nickname ||= File.basename(openid)  # XXX: ad-hoc
-      email = params['openid.sreg.email']
-
-      if not user = User.first(:openid => openid)
-        user = User.new(:openid => openid, :nickname => nickname, :email => email)
-        unless user.save
-          flash[:error] = user.errors.full_messages.join('. ') + '.'
-          redirect url_for('/login')
-        end
+      if user = User.first(:openid => openid)
+        session[:user_id] = user.id
+        flash[:info] = 'Login succeeded'
+        redirect url_for(session.delete(:return_path) || '/')
+      else
+        session[:user_props] = {
+          :openid   => openid,
+          :nickname => params['openid.sreg.nickname'] || '',
+          :fullname => params['openid.sreg.fullname'] || '',
+          :email    => params['openid.sreg.email'] || '',
+        }
+        redirect url_for('/new_user')
       end
-      session[:user_id] = user.id
-      flash[:info] = 'Login succeeded'
-      redirect url_for(session.delete(:return_path) || '/')
+    end
+  end
+
+  # create new user
+  get '/new_user' do
+    props = session.delete(:user_props)
+    redirect url_for('/') unless props
+    session[:openid] = props[:openid]
+    @user = User.new(props)
+    if !@user.nickname.empty? && User.first(:nickname => @user.nickname)
+      flash[:error] = "Nickname `#{@user.nickname}' is already used by another user. Please try other name."
+    end
+    haml :new_user
+  end
+
+  # create new user
+  post '/new_user' do
+    openid   = session[:openid]
+    nickname = params[:nickname].strip
+    fullname = params[:fullname].strip
+    email    = params[:email].strip
+    @user = User.new(:openid => openid, :nickname => nickname, :fullname => fullname, :email => email)
+    if !@user.nickname.empty? && User.first(:nickname => @user.nickname)
+      flash[:error] = "Nickname `#{@user.nickname}' is already used by another user. Please try other name."
+      haml :new_user
+    else
+      if @user.save
+        session.delete(:openid)
+        session[:user_id] = @user.id
+        flash[:info] = 'Login succeeded'
+        redirect url_for(session.delete(:return_path) || '/')
+      else
+        flash[:error] = @user.errors.full_messages.join('. ') + '.'
+        haml :new_user
+      end
     end
   end
 

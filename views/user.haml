@@ -1,16 +1,20 @@
-%h2= "User: #{@user.nickname}"
+- @page_title = "User:#{@user.nickname}"
+%h2= @page_title
 
-%h3 Profile
-.user-profile
-  %dl
-    %dt OpenID
-    %dd= @user.openid
-
-    %dt Nickname
-    %dd= @user.nickname
-
-    %dt Email
-    %dd= @user.email
+.user-profile.rounded-box
+  .contents
+    %dl
+      %dt Nickname
+      %dd= @user.nickname
+    %dl
+      %dt Fullname
+      %dd= @user.fullname
+    %dl
+      %dt Email
+      %dd= @user.email
+    %dl
+      %dt Joined at
+      %dd= @user.created_at.strftime('%Y-%m-%d %H:%M')
 
 %h3 Posted snippets
 - @snippets = @user.snippets
