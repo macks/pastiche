@@ -19,6 +19,7 @@
       %a{ :href => path_to("/#{@snippet.id}/raw/#{@snippet.filename}") } raw
       - if logged_in? && @snippet.user == @authd_user
         %a{ :href => path_to("/#{@snippet.id}/edit") } edit
+        %a{ :href => path_to("/#{@snippet.id}/delete") } delete
     .clear
     .snippet-body
       !~ render_snippet(@snippet)

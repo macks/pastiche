@@ -1,0 +1,8 @@
+- @page_title = "#{@snippet.filename} - Delete"
+%h2= "Deleting `#{@snippet.filename}'"
+.rounded-box
+  .content
+    %form{ :class => 'snippet-form', :method => :post }
+      %p This action is unrecoverable. Are you sure?
+      %input{ :type => :submit, :value => 'Delete' }
+      %input{ :type => :submit, :name => :cancel, :value => 'Cancel' }

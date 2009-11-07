@@ -151,6 +151,23 @@ class Pastiche < Sinatra::Base
     end
   end
 
+  # confirm snippet deletion
+  get %r{\A/(\d+)/delete\z} do |id|
+    @snippet = find_snippet(id)
+    permission_denied if ! logged_in? || @snippet.user != @authd_user
+    haml :delete
+  end
+
+  # delete a snippet
+  post %r{\A/(\d+)/delete\z} do |id|
+    @snippet = find_snippet(id)
+    permission_denied if ! logged_in? || @snippet.user != @authd_user
+    redirect url_for("/#{id}") if canceled?
+    @snippet.destroy!
+    flash[:info] = 'Deleted'
+    redirect url_for('/')
+  end
+
   # show user information
   get '/user/:user' do |user|
     @user = User.first(:nickname => user)
