@@ -32,6 +32,7 @@ class Pastiche < Sinatra::Base
 
     has n, :snippets
 
+    validates_is_unique :nickname
     validates_format :nickname, :with => /\A[\w\-]+\z/
     validates_format :email,    :as => :email_address
   end
@@ -107,48 +108,38 @@ class Pastiche < Sinatra::Base
   end
 
   # show a snippet
-  get %r{\A/(\d+)\z} do |snippet_id|
-    @snippet = Snippet.get(snippet_id)
-    redirect url_for('/') unless @snippet
+  get %r{\A/(\d+)\z} do |id|
+    @snippet = find_snippet(id)
     haml :snippet
   end
 
   # download a snippet
-  get %r{\A/(\d+)/download\z} do |snippet_id|
-    @snippet = Snippet.get(snippet_id)
-    redirect url_for('/') unless @snippet
+  get %r{\A/(\d+)/download\z} do |id|
+    @snippet = find_snippet(id)
     content_type 'text/plain'
     attachment @snippet.filename
     @snippet.text
   end
 
   # show a raw snippet
-  get %r{\A/(\d+)/raw(?:\z|/)} do |snippet_id|
-    @snippet = Snippet.get(snippet_id)
-    redirect url_for('/') unless @snippet
+  get %r{\A/(\d+)/raw(?:\z|/)} do |id|
+    @snippet = find_snippet(id)
     content_type 'text/plain'
     @snippet.text
   end
 
   # edit a snippet
-  get %r{\A/(\d+)/edit\z} do |snippet_id|
-    permission_denied if not logged_in?
-    @snippet = Snippet.get(snippet_id)
-    redirect url_for('/') unless @snippet
-    permission_denied if @snippet.user != @authd_user
+  get %r{\A/(\d+)/edit\z} do |id|
+    @snippet = find_snippet(id)
+    permission_denied if ! logged_in? || @snippet.user != @authd_user
     haml :edit
   end
 
   # update a snippet
-  post %r{\A/(\d+)/edit\z} do |snippet_id|
-    permission_denied if not logged_in?
-    @snippet = Snippet.get(snippet_id)
-    redirect url_for('/') unless @snippet
-    permission_denied if @snippet.user != @authd_user
-    if !params[:cancel].blank?
-      flash[:info] = 'Canceled'
-      redirect url_for("/#{@snippet.id}")
-    end
+  post %r{\A/(\d+)/edit\z} do |id|
+    @snippet = find_snippet(id)
+    permission_denied if ! logged_in? || @snippet.user != @authd_user
+    redirect url_for("/#{id}") if canceled?
     props = validate_snippet_parameters
     @snippet.update(props)
     if @snippet.dirty?
@@ -156,7 +147,7 @@ class Pastiche < Sinatra::Base
       haml :edit
     else
       flash[:info] = 'Updated'
-      redirect url_for("/#{@snippet.id}")
+      redirect url_for("/#{id}")
     end
   end
 
@@ -178,15 +169,12 @@ class Pastiche < Sinatra::Base
   post '/user/:user/edit' do |user|
     @user = @authd_user
     permission_denied if ! logged_in? || @user.nickname != user
-    if ! params[:cancel].blank?
-      flash[:info] = 'Canceled'
-      redirect url_for("/user/#{@user.nickname}")
-    end
+    redirect url_for("/user/#{user}") if canceled?
     @user.fullname = params[:fullname].strip
     @user.email    = params[:email].strip
     if @user.save
       flash[:info] = 'Your user information was updated.'
-      redirect url_for("/user/#{@user.nickname}")
+      redirect url_for("/user/#{user}")
     else
       flash[:error] = @user.errors.full_messages.join('. ') + '.'
       haml :edit_user
@@ -266,8 +254,8 @@ class Pastiche < Sinatra::Base
     fullname = params[:fullname].strip
     email    = params[:email].strip
     @user = User.new(:openid => openid, :nickname => nickname, :fullname => fullname, :email => email)
-    if User.first(:nickname => @user.nickname)
-      flash[:error] = "Nickname `#{@user.nickname}' is already used by another user. Please try other name."
+    if User.first(:nickname => nickname)
+      flash[:error] = "Nickname `#{nickname}' is already used by another user. Please try other name."
       haml :new_user
     else
       if @user.save
@@ -284,7 +272,7 @@ class Pastiche < Sinatra::Base
 
   # logout
   get '/logout' do
-    session.delete(:user_id)
+    session.clear
     flash[:info] = 'Logged out'
     redirect url_for('/')
   end
@@ -315,9 +303,24 @@ class Pastiche < Sinatra::Base
     !! @authd_user
   end
 
+  def canceled?
+    if params[:cancel].blank?
+      false
+    else
+      flash[:info] = 'Canceled'
+      true
+    end
+  end
+
   def permission_denied
     status 403
     halt(haml(:permission_denied))
+  end
+
+  def find_snippet(id)
+    snippet = Snippet.get(id)
+    redirect url_for('/') unless snippet
+    snippet
   end
 
   def validate_snippet_parameters
