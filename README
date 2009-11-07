@@ -16,7 +16,7 @@ Required libraries are:
 - DataMapper
 - Ultraviolet
 
-Required libraries for development are:
+More libraries are required for development:
 
 - RSpec
 - Webrat
@@ -25,10 +25,11 @@ Required libraries for development are:
 == Authors
 
 MATSUYAMA Kengo <macksx@gmail.com>
+http://github.com/macks/pastiche/
 
 == License
 
-See LICENSE.
+See LICENSE. (the MIT License)
 
 === jQuery
 
