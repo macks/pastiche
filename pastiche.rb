@@ -3,6 +3,7 @@
 #
 # Simple pastebin-like application using Sinatra with OpenID authentication
 #
+# Author: MATSUYAMA Kengo
 
 $KCODE = 'u' if RUBY_VERSION < '1.9'
 

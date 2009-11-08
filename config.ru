@@ -16,9 +16,13 @@ Pastiche.instance_eval do
   #set :root, '/path/to/app_root'
 end
 
+# Set up DataMapper
 DataMapper::Logger.new(STDERR, :debug)
 DataMapper.setup(:default, 'sqlite3:pastiche.db')
 #DataMapper.setup(:default, 'mysql://user:password@hostname/database_name?encoding=UTF-8')
 DataMapper.auto_upgrade!
+
+# Suppress OpenID's logging
+#OpenID::Util.logger.level = 10
 
 run Pastiche
