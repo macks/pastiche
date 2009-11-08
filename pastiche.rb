@@ -402,6 +402,10 @@ class Pastiche < Sinatra::Base
     @timezone ||= Rational(Time.now.utc_offset, 86400)
   end
 
+  def expand_tabs(text, tabstop = 8)
+    text.gsub(/([^\n\t]*)\t/) { $1 + ' ' * (tabstop - $1.size % tabstop) }
+  end
+
   helpers do
     def partial(name)
       haml "_#{name}".to_sym, :layout => false
@@ -412,6 +416,7 @@ class Pastiche < Sinatra::Base
       line_numbers = options[:line_numbers] if options.has_key?(:line_numbers)
       text = snippet.text
       text = text.lines.take(options[:lines]).join if options[:lines]
+      text = expand_tabs(text)
       Uv.parse(text, 'xhtml', snippet.type, line_numbers, self.class.uv_theme)
     end
 
