@@ -22,4 +22,4 @@
         %a{ :href => path_to("/#{@snippet.id}/delete") } delete
     .clear
     .snippet-body
-      !~ render_snippet(@snippet)
+      != render_snippet(@snippet, :anchors => true)

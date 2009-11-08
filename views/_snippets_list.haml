@@ -9,11 +9,12 @@
           %a{ :href => path_to("/user/#{snippet.user.nickname}") }= snippet.user.nickname
           %span.snippet-inline-datetime= render_datetime(snippet.updated_at)
         - unless snippet.comment.empty?
-          - comment = snippet.comment.chars.take(40).join
           .snippet-comment
-            = comment
+            = comment = snippet.comment.chars.take(40).join
             - if snippet.comment != comment
               %a{:href => path_to("/#{snippet.id}")}> &hellip;
+            -# tweak for IE6
+            &nbsp;
         .clear
         .snippet-body{ :title => snippet.comment }
-          !~ render_snippet(snippet, :lines => 3)
+          != render_snippet(snippet, :lines => 3)

@@ -412,12 +412,19 @@ class Pastiche < Sinatra::Base
     end
 
     def render_snippet(snippet, options = {})
-      line_numbers = true
-      line_numbers = options[:line_numbers] if options.has_key?(:line_numbers)
+      use_anchors = options[:anchors]
       text = snippet.text
       text = text.lines.take(options[:lines]).join if options[:lines]
       text = expand_tabs(text)
-      Uv.parse(text, 'xhtml', snippet.type, line_numbers, self.class.uv_theme)
+      html = Uv.parse(text, 'xhtml', snippet.type, true, self.class.uv_theme)
+      html.sub!(/\A(<pre[^>]*>)(.*)<\/pre>/m, '\\2')
+      pre = $1
+      html.gsub!(/(<span[^>]+line-numbers[^>]+>([ \d]+)<\/span>)(.*)/) do
+        n = $2.strip
+        line = use_anchors ? "<a name='L#{n}' href='\#L#{n}'>#{$1}</a>" : $1
+        "#{pre}<div class='L#{n}'>#{line}#{$3}</div></pre>"
+      end
+      html
     end
 
     def render_datetime(dt)
