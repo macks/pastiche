@@ -55,7 +55,7 @@ class Pastiche < Sinatra::Base
 
   # options
   enable :sessions
-  set :path_prefix, nil
+  set :path_prefix, ''
   set :haml, :escape_html => true
   set :sass, :style => :expanded
   set :root, '.'
@@ -70,7 +70,7 @@ class Pastiche < Sinatra::Base
     # load sessions
     if session[:user_id]
       @authd_user = User.get(session[:user_id])
-      session.delete(:user_id) unless @authd_user
+      session.clear unless @authd_user
     end
 
     # clear useless sessions
@@ -131,14 +131,14 @@ class Pastiche < Sinatra::Base
   # edit a snippet
   get %r{\A/(\d+)/edit\z} do |id|
     @snippet = find_snippet(id)
-    permission_denied if ! logged_in? || @snippet.user != @authd_user
+    permission_denied if @authd_user != @snippet.user
     haml :edit
   end
 
   # update a snippet
   post %r{\A/(\d+)/edit\z} do |id|
     @snippet = find_snippet(id)
-    permission_denied if ! logged_in? || @snippet.user != @authd_user
+    permission_denied if @authd_user != @snippet.user
     redirect url_for("/#{id}") if canceled?
     props = validate_snippet_parameters
     @snippet.update(props)
@@ -154,14 +154,14 @@ class Pastiche < Sinatra::Base
   # confirm snippet deletion
   get %r{\A/(\d+)/delete\z} do |id|
     @snippet = find_snippet(id)
-    permission_denied if ! logged_in? || @snippet.user != @authd_user
+    permission_denied if @authd_user != @snippet.user
     haml :delete
   end
 
   # delete a snippet
   post %r{\A/(\d+)/delete\z} do |id|
     @snippet = find_snippet(id)
-    permission_denied if ! logged_in? || @snippet.user != @authd_user
+    permission_denied if @authd_user != @snippet.user
     redirect url_for("/#{id}") if canceled?
     @snippet.destroy!
     flash[:info] = 'Deleted'
@@ -205,7 +205,6 @@ class Pastiche < Sinatra::Base
 
   # login
   post '/login' do
-    url = site_url
     identifier = params[:openid_identifier]
 
     begin
@@ -213,7 +212,7 @@ class Pastiche < Sinatra::Base
       sreg_request = OpenID::SReg::Request.new
       sreg_request.request_fields(%w(nickname fullname email))
       checkid_request.add_extension(sreg_request)
-      redirect checkid_request.redirect_url(url, url_for('/login/complete'))
+      redirect checkid_request.redirect_url(site_url, url_for('/login/complete'))
     rescue
       flash[:error] = $!.to_s
       redirect url_for('/login')
@@ -302,8 +301,8 @@ class Pastiche < Sinatra::Base
 
   # for test environment only
   configure :test do
-    get '/login/:user_id' do |user_id|
-      if user = User.get(user_id.to_i)
+    get '/login/:user_id' do |id|
+      if user = User.get(id)
         session[:user_id] = user.id
         redirect url_for('/')
       else
@@ -321,11 +320,11 @@ class Pastiche < Sinatra::Base
   end
 
   def canceled?
-    if params[:cancel].blank?
-      false
-    else
+    if not params[:cancel].blank?
       flash[:info] = 'Canceled'
       true
+    else
+      false
     end
   end
 
@@ -355,38 +354,25 @@ class Pastiche < Sinatra::Base
   end
 
   def openid_consumer
-    rootdir = self.class.root || '.'
-    storage = OpenID::Store::Filesystem.new(File.join(rootdir, 'tmp'))
+    storage = OpenID::Store::Filesystem.new(File.join(self.class.root, 'tmp'))
     OpenID::Consumer.new(session, storage)
   end
 
-  STANDARD_PORTNUMBER = {
-    'http'  => 80,
-    'https' => 443,
-  }
-
   def site_url
-    url = request.scheme + '://'
-    url << request.host
-    url << ":#{request.port}" if STANDARD_PORTNUMBER[request.scheme] != request.port
-    url << self.class.path_prefix if self.class.path_prefix
+    url = "#{request.scheme}://#{request.host}"
+    url << ":#{request.port}" if URI.const_get(request.scheme.upcase).default_port != request.port
+    url << self.class.path_prefix
     url << '/' unless url[-1] == ?/
     url
   end
 
   def url_for(path)
     return path if self.class.test?  # relative URL redirection for test environment.
-    url = site_url
-    url = site_url.chomp('/')
-    url + path
+    site_url.chomp('/') << path
   end
 
   def path_to(path)
-    if self.class.path_prefix
-      self.class.path_prefix + path
-    else
-      path
-    end
+    self.class.path_prefix + path
   end
 
   def flash
@@ -421,14 +407,14 @@ class Pastiche < Sinatra::Base
       pre = $1
       html.gsub!(/(<span[^>]+line-numbers[^>]+>([ \d]+)<\/span>)(.*)/) do
         n = $2.strip
-        line = use_anchors ? "<a name='L#{n}' href='\#L#{n}'>#{$1}</a>" : $1
-        "#{pre}<div class='L#{n}'>#{line}#{$3}</div></pre>"
+        span = if use_anchors then "<a name='L#{n}' href='\#L#{n}'>#{$1}</a>" else $1 end
+        "#{pre}<div class='L#{n}'>#{span}#{$3}</div></pre>"
       end
       html
     end
 
     def render_datetime(dt)
-      dt.new_offset(timezone).strftime('%Y-%m-%d %H:%M')
+      dt.new_offset(timezone).strftime('%F %R')
     end
   end
 
