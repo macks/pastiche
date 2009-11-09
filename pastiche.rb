@@ -40,14 +40,14 @@ class Pastiche < Sinatra::Base
 
   class Snippet
     include DataMapper::Resource
-    property :id,         Serial
-    property :user_id,    Integer,  :nullable => false
-    property :created_at, DateTime, :nullable => false, :auto_validation => false
-    property :updated_at, DateTime, :nullable => false, :auto_validation => false
-    property :type,       String,   :nullable => false, :length => 40
-    property :filename,   String,   :nullable => false, :length => 128
-    property :comment,    String,   :length => 512
-    property :text,       Text,     :nullable => false, :length => 65536
+    property :id,          Serial
+    property :user_id,     Integer,  :nullable => false
+    property :created_at,  DateTime, :nullable => false, :auto_validation => false
+    property :updated_at,  DateTime, :nullable => false, :auto_validation => false
+    property :type,        String,   :nullable => false, :length => 40
+    property :filename,    String,   :nullable => false, :length => 128
+    property :description, String,   :length => 512
+    property :text,        Text,     :nullable => false, :length => 65536
 
     validates_format :filename, :with => /\A[^\/\r\n]+\z/
 
@@ -343,7 +343,7 @@ class Pastiche < Sinatra::Base
   def validate_snippet_parameters
     params[:filename].strip!
     params[:type].strip!
-    params[:comment].strip!
+    params[:description].strip!
     params[:text].gsub!(/\r\n/, "\n")
 
     if not syntaxes.include?(params[:type])
@@ -351,7 +351,7 @@ class Pastiche < Sinatra::Base
       redirect url_for('/new')
     end
 
-    [:filename, :type, :comment, :text].inject({}) {|hash, key| hash[key] = params[key]; hash}
+    [:filename, :type, :description, :text].inject({}) {|hash, key| hash[key] = params[key]; hash}
   end
 
   def openid_consumer

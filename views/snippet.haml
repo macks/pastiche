@@ -12,8 +12,8 @@
     .snippet-datetime
       Created at
       = render_datetime(@snippet.created_at)
-    - unless @snippet.comment.empty?
-      .snippet-comment= @snippet.comment
+    - unless @snippet.description.empty?
+      .snippet-description= @snippet.description
     .snippet-links
       %a{ :href => path_to("/#{@snippet.id}/download") } download
       %a{ :href => path_to("/#{@snippet.id}/raw/#{@snippet.filename}") } raw

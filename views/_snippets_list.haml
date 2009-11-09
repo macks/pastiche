@@ -3,18 +3,18 @@
     %li.snippet.rounded-box
       .contents
         .snippet-filename
-          %a{ :href => path_to("/#{snippet.id}"), :title => snippet.comment }= snippet.filename
+          %a{ :href => path_to("/#{snippet.id}"), :title => snippet.description }= snippet.filename
         .snippet-author
           by
           %a{ :href => path_to("/user/#{snippet.user.nickname}") }= snippet.user.nickname
           %span.snippet-inline-datetime= render_datetime(snippet.updated_at)
-        - unless snippet.comment.empty?
-          .snippet-comment
-            = comment = snippet.comment.chars.take(40).join
-            - if snippet.comment != comment
+        - unless snippet.description.empty?
+          .snippet-description
+            = description = snippet.description.chars.take(40).join
+            - if snippet.description != description
               %a{:href => path_to("/#{snippet.id}")}> &hellip;
             -# tweak for IE6
             &nbsp;
         .clear
-        .snippet-body{ :title => snippet.comment }
+        .snippet-body{ :title => snippet.description }
           != render_snippet(snippet, :lines => 3)

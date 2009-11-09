@@ -13,7 +13,7 @@ $(function() {
   }).blur(function() {
     if (!this.value) { $(this).addClass('placeholder'); }
   });
-  $('ul.snippets .snippet-comment a').click(function() {
+  $('ul.snippets .snippet-description a').click(function() {
     var div = $(this).parent();
     div.empty().append(div.siblings('.snippet-body').attr('title'));
     return false;

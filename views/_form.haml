@@ -9,9 +9,9 @@
       - syntaxes.each do |syntax|
         %option{ :value => syntax, :selected => (type == syntax) }= syntax.gsub(/_/, ' ')
   .clear
-  .snippet-comment
+  .snippet-description
     %span.to-be-invisible Comment:
-    %input{ :class => :placeholder, :type => :text, :name => :comment, :size => 32, :value => @snippet.comment }
+    %input{ :class => :placeholder, :type => :text, :name => :description, :size => 32, :value => @snippet.description }
   %textarea{ :name => :text }= @snippet.text
   %input{ :type => :submit, :value => @submit_button }
   - if @cancel_button
