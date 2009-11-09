@@ -24,7 +24,7 @@ class Pastiche < Sinatra::Base
   class User
     include DataMapper::Resource
     property :id,         Serial
-    property :openid,     String,   :nullable => false, :length => 256, :unique_index => :openid
+    property :openid,     String,   :nullable => false, :length => 128, :unique_index => :openid
     property :nickname,   String,   :nullable => false, :length => 16, :unique_index => :nickname
     property :fullname,   String,   :length => 128
     property :email,      String,   :length => 128
