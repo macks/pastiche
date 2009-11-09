@@ -49,7 +49,7 @@ class Pastiche < Sinatra::Base
     property :comment,    String,   :length => 512
     property :text,       Text,     :nullable => false, :length => 65536
 
-    validates_format :filename, :with => /\A[^\/]+\z/
+    validates_format :filename, :with => /\A[^\/\r\n]+\z/
 
     belongs_to :user
   end
