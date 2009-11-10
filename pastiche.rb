@@ -47,11 +47,13 @@ class Pastiche < Sinatra::Base
     property :type,        String,   :nullable => false, :length => 40
     property :filename,    String,   :nullable => false, :length => 128
     property :description, String,   :length => 512
+    property :tabstop,     Integer,  :nullable => false, :default => 8
     property :text,        Text,     :nullable => false, :length => 65536
 
-    validates_format :filename, :with => /\A[^\/\r\n]+\z/
-
     belongs_to :user
+
+    validates_within :tabstop, :set => (2..8)
+    validates_format :filename, :with => /\A[^\/\r\n]+\z/
   end
 
   # options
@@ -343,6 +345,7 @@ class Pastiche < Sinatra::Base
   def validate_snippet_parameters
     params[:filename].strip!
     params[:type].strip!
+    params[:tabstop] = params[:tabstop].to_i
     params[:description].strip!
     params[:text].gsub!(/\r\n/, "\n")
 
@@ -351,7 +354,7 @@ class Pastiche < Sinatra::Base
       redirect url_for('/new')
     end
 
-    [:filename, :type, :description, :text].inject({}) {|hash, key| hash[key] = params[key]; hash}
+    [:filename, :type, :tabstop, :description, :text].inject({}) {|hash, key| hash[key] = params[key]; hash}
   end
 
   def openid_consumer
@@ -402,7 +405,7 @@ class Pastiche < Sinatra::Base
       use_anchors = options[:anchors]
       text = snippet.text
       text = text.lines.take(options[:lines]).join if options[:lines]
-      text = expand_tabs(text)
+      text = expand_tabs(text, snippet.tabstop)
       html = Uv.parse(text, 'xhtml', snippet.type, true, self.class.uv_theme)
       html.sub!(/\A(<pre[^>]*>)(.*)<\/pre>/m, '\\2')
       pre = $1

@@ -8,10 +8,15 @@
     %select{ :name => :type }
       - syntaxes.each do |syntax|
         %option{ :value => syntax, :selected => (type == syntax) }= syntax.gsub(/_/, ' ')
-  .clear
+  .snippet-tabstop
+    Tab stop:
+    %select{ :name => :tabstop }
+      - [4, 8].each do |tabstop|
+        %option{ :value => tabstop, :selected => (@snippet.tabstop == tabstop) }!= "#{tabstop}&nbsp;"
   .snippet-description
     %span.to-be-invisible Comment:
     %input{ :class => :placeholder, :type => :text, :name => :description, :size => 32, :value => @snippet.description }
+  .clear
   %textarea{ :name => :text }= @snippet.text
   %input{ :type => :submit, :value => @submit_button }
   - if @cancel_button
