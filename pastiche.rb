@@ -411,7 +411,7 @@ class Pastiche < Sinatra::Base
       pre = $1
       html.gsub!(/(<span[^>]+line-numbers[^>]+>([ \d]+)<\/span>)(.*)/) do
         n = $2.strip
-        span = if use_anchors then "<a name='L#{n}' href='\#L#{n}'>#{$1}</a>" else $1 end
+        span = if use_anchors then "<a name='L#{n}' class='line-number-anchor' href='\#L#{n}'>#{$1}</a>" else $1 end
         "#{pre}<div class='L#{n}'>#{span}#{$3}</div></pre>"
       end
       html

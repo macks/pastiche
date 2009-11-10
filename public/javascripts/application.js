@@ -35,4 +35,8 @@ $(function() {
       highlighten(line_start);
     }
   });
+  $('.line-number-anchor').click(function() {
+    $('.highlight-line').removeClass('highlight-line');
+    $('.' + $(this).attr('name')).addClass('highlight-line');
+  });
 });
