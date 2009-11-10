@@ -14,7 +14,7 @@
       - [4, 8].each do |tabstop|
         %option{ :value => tabstop, :selected => (@snippet.tabstop == tabstop) }!= "#{tabstop}&nbsp;"
   .snippet-description
-    %span.to-be-invisible Comment:
+    %span.to-be-invisible Description:
     %input{ :class => :placeholder, :type => :text, :name => :description, :size => 32, :value => @snippet.description }
   .clear
   %textarea{ :name => :text }= @snippet.text
