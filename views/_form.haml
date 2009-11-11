@@ -11,7 +11,7 @@
   .snippet-tabstop
     Tab stop:
     %select{ :name => :tabstop }
-      - [4, 8].each do |tabstop|
+      - [2, 4, 8].each do |tabstop|
         %option{ :value => tabstop, :selected => (@snippet.tabstop == tabstop) }!= "#{tabstop}&nbsp;"
   .snippet-description
     %span.to-be-invisible Description:
