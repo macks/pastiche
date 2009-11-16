@@ -54,6 +54,7 @@ describe 'Pastiche' do
     fill_in 'description', :with => 'New description'
     fill_in 'text',        :with => 'New snippet body'
     select  'plain text', :from => 'type'
+    select  /8/,          :from => 'tabstop'
     click_button 'Create'
 
     last_response.should be_ok
