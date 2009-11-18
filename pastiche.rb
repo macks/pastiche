@@ -82,7 +82,7 @@ class Pastiche < Sinatra::Base
 
   # top page
   get '/' do
-    @snippets = Snippet.all(:order => [:updated_at.desc], :limit => 10)
+    @snippets = Snippet.all(:order => [:created_at.desc], :limit => 10)
     haml :index
   end
 
