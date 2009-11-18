@@ -42,8 +42,8 @@ class Pastiche < Sinatra::Base
     include DataMapper::Resource
     property :id,          Serial
     property :user_id,     Integer,  :nullable => false
-    property :created_at,  DateTime, :nullable => false, :auto_validation => false
-    property :updated_at,  DateTime, :nullable => false, :auto_validation => false
+    property :created_at,  DateTime, :nullable => false, :auto_validation => false, :index => :created
+    property :updated_at,  DateTime, :nullable => false, :auto_validation => false, :index => :updated
     property :type,        String,   :nullable => false, :length => 40
     property :filename,    String,   :nullable => false, :length => 128
     property :description, String,   :length => 512
