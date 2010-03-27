@@ -1,7 +1,7 @@
 require 'rubygems'
 require 'spec'
 require 'webrat'
-require 'webrat/sinatra'
+require 'webrat/adapters/sinatra'
 
 ENV['RACK_ENV'] = 'test'
 
