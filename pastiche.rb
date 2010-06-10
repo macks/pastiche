@@ -17,6 +17,7 @@ require 'sass'
 require 'dm-core'
 require 'dm-validations'
 require 'dm-timestamps'
+require 'dm-migrations'
 require 'uv'
 
 class Pastiche < Sinatra::Base
@@ -33,9 +34,9 @@ class Pastiche < Sinatra::Base
 
     has n, :snippets
 
-    validates_is_unique :nickname
-    validates_format :nickname, :with => /\A[\w\-]+\z/
-    validates_format :email,    :as => :email_address
+    validates_uniqueness_of :nickname
+    validates_format_of :nickname, :with => /\A[\w\-]+\z/
+    validates_format_of :email,    :as => :email_address
   end
 
   class Snippet
@@ -53,7 +54,7 @@ class Pastiche < Sinatra::Base
     belongs_to :user
 
     validates_within :tabstop, :set => (2..8)
-    validates_format :filename, :with => /\A[^\/\r\n]+\z/
+    validates_format_of :filename, :with => /\A[^\/\r\n]+\z/
   end
 
   # options
