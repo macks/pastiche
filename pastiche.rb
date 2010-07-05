@@ -8,6 +8,12 @@
 $KCODE = 'u' if RUBY_VERSION < '1.9'
 
 require 'rubygems'
+begin
+  require 'bundler'
+  Bundler.setup
+rescue LoadError
+end
+
 require 'sinatra/base'
 require 'openid'
 require 'openid/store/filesystem'

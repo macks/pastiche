@@ -9,7 +9,7 @@ Pastiche.instance_eval do
   disable :sessions
   use Rack::Session::Cookie, :secret => '__secret__', :expire_after => nil
 
-  # Set path_prefix when the app is mounted sub-directory.
+  # Set path_prefix when the app is mounted on sub-directory.
   #set :path_prefix, '/pastiche'
 
   # Set application root directory.

@@ -1,4 +1,10 @@
 require 'rubygems'
+begin
+  require 'bundler'
+  Bundler.setup
+rescue LoadError
+end
+
 require 'spec'
 require 'webrat'
 require 'webrat/adapters/sinatra'
