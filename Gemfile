@@ -1,6 +1,8 @@
 # vim: set ft=ruby:
 source :rubygems
 
+gem 'rake'
+
 gem 'sinatra'
 gem 'ruby-openid'
 gem 'haml'

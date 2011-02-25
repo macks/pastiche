@@ -1,8 +1,10 @@
 require 'rubygems'
-require 'spec/rake/spectask'
+require 'bundler'
+Bundler.setup
+require 'rspec/core/rake_task'
 
 task :default => [:spec]
 
-Spec::Rake::SpecTask.new do |t|
-  t.libs << 'spec'
+RSpec::Core::RakeTask.new do |t|
+  t.ruby_opts = '-Ispec'
 end

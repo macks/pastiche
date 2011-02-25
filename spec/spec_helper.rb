@@ -5,7 +5,7 @@ begin
 rescue LoadError
 end
 
-require 'spec'
+require 'rspec'
 require 'webrat'
 require 'webrat/adapters/sinatra'
 

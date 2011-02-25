@@ -57,14 +57,16 @@ describe 'Pastiche' do
     select  /8/,          :from => 'tabstop'
     click_button 'Create'
 
+    follow_redirect!
     last_response.should be_ok
-    current_url.should =~ %r{^/\d+$}
+    last_request.path.should match(%r{^/\d+$})
     last_response.should contain('New snippet body')
   end
 
   it 'returns a login form when unauthorized user is at /new' do
     visit '/new'
-    current_url.should == '/login'
+    follow_redirect!
+    last_request.path.should == '/login'
   end
 
   it 'occurs 403 error when unauthorized user try to post' do
@@ -88,7 +90,8 @@ describe 'Pastiche' do
   it 'clears user session at /logout' do
     login
     click_link 'Logout'
-    current_url.should == '/'
+    follow_redirect!
+    last_request.path.should == '/'
     last_response.should have_selector('div', :content => 'Logged out')
     last_response.should have_selector('a', :content => 'login')
   end
@@ -101,6 +104,7 @@ describe 'Pastiche' do
     openid = 'http://openid.example.com/user%03d' % id
     @user = Pastiche::User.create(:openid => openid, :nickname => "user#{id}", :fullname => "John Smith #{id}")
     visit "/login/#{@user.id}"
+    follow_redirect!
     last_response.should contain('logged in as')
   end
 
